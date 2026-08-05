@@ -82,8 +82,8 @@ def train_and_benchmark():
         'decision_tree': compute_metrics(y_test, dt_preds),
         'random_forest': compute_metrics(y_test, rf_preds),
         'model_version': 'v2.0.1',
-        'dataset_version': 'MedPredict Dataset v1.2',
-        'dataset_name': 'MedPredict Synthetic Clinical Dataset',
+        'dataset_version': 'Smart Health Dataset v1.2',
+        'dataset_name': 'Smart Health Synthetic Dataset v1.2',
         'dataset_size': len(df),
         'train_size': len(X_train),
         'test_size': len(X_test),
@@ -113,7 +113,7 @@ def train_and_benchmark():
     with open(os.path.join(Config.MODELS_DIR, 'metrics.json'), 'w') as f:
         json.dump(metrics, f, indent=2)
         
-    print("\n================ MedPredict AI Training Complete ================")
+    print("\n================ Smart Health Model Training Complete ================")
     print(f"Model Version:         {metrics['model_version']}")
     print(f"Dataset Version:       {metrics['dataset_version']}")
     print(f"Training Duration:     {metrics['training_duration_sec']} sec")
@@ -122,7 +122,7 @@ def train_and_benchmark():
     print(f"Logistic Regression:   {metrics['logistic_regression']['accuracy'] * 100:.2f}%")
     print(f"Decision Tree:         {metrics['decision_tree']['accuracy'] * 100:.2f}%")
     print(f"Random Forest:         {metrics['random_forest']['accuracy'] * 100:.2f}% (BEST MODEL)")
-    print("=================================================================\n")
+    print("======================================================================\n")
     
     return metrics
 

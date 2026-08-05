@@ -69,8 +69,8 @@
     ]
   },
   "model_version": "v2.0.1",
-  "dataset_version": "MedPredict Dataset v1.2",
-  "dataset_name": "MedPredict Synthetic Clinical Dataset",
+  "dataset_version": "Smart Health Dataset v1.2",
+  "dataset_name": "Smart Health Synthetic Dataset v1.2",
   "dataset_size": 10500,
   "train_size": 8400,
   "test_size": 2100,
@@ -90,8 +90,8 @@
     "exercise",
     "family_history"
   ],
-  "training_duration_sec": 4.79,
-  "trained_at": "2026-08-05T07:24:10Z",
+  "training_duration_sec": 3.36,
+  "trained_at": "2026-08-05T08:22:31Z",
   "trained_at_display": "05-Aug-2026",
   "best_model": "logistic_regression"
 }

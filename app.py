@@ -44,11 +44,11 @@ def get_model_training_meta():
     now = datetime.utcnow()
     return {
         'model_version': 'v2.0.1',
-        'dataset_version': 'MedPredict Dataset v1.2',
+        'dataset_version': 'Smart Health Dataset v1.2',
         'training_duration_sec': 4.79,
         'trained_at': now.strftime('%Y-%m-%dT%H:%M:%SZ'),
         'trained_at_display': now.strftime('%d-%b-%Y'),
-        'dataset_name': 'MedPredict Synthetic Clinical Dataset',
+        'dataset_name': 'Smart Health Synthetic Dataset v1.2',
         'best_model': 'random_forest'
     }
 
@@ -310,8 +310,8 @@ def api_get_analytics():
         'success': True,
         'total_predictions': total_predictions,
         'model_version': meta.get('model_version', 'v2.0.1'),
-        'dataset_version': meta.get('dataset_version', 'MedPredict Dataset v1.2'),
-        'dataset_name': meta.get('dataset_name', 'MedPredict Synthetic Clinical Dataset'),
+        'dataset_version': meta.get('dataset_version', 'Smart Health Dataset v1.2'),
+        'dataset_name': meta.get('dataset_name', 'Smart Health Synthetic Dataset v1.2'),
         'dataset_size': meta.get('dataset_size', 10500),
         'train_samples': meta.get('train_size', 8400),
         'test_samples': meta.get('test_size', 2100),
@@ -353,7 +353,7 @@ def api_system_status():
             'avg_speed_ms': avg_speed,
             'storage': 'SQLite Engine Normal',
             'model_version': meta.get('model_version', 'v2.0.1'),
-            'dataset_version': meta.get('dataset_version', 'MedPredict Dataset v1.2'),
+            'dataset_version': meta.get('dataset_version', 'Smart Health Dataset v1.2'),
             'training_duration_sec': meta.get('training_duration_sec', 4.79),
             'last_trained': meta.get('trained_at_display', datetime.utcnow().strftime('%d-%b-%Y')),
             'trained_at_iso': meta.get('trained_at', datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'))
@@ -415,7 +415,7 @@ def internal_error(error):
 def api_health():
     return jsonify({
         'status': 'healthy',
-        'system': 'MedPredict AI Intelligent Healthcare Analytics Platform',
+        'system': 'Smart Health Prediction System',
         'api_response_sla': '< 1.0 second',
         'version': '2.0.1',
         'timestamp': datetime.utcnow().isoformat()
