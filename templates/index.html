@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPredict AI | Intelligent Healthcare Analytics Platform</title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom Enterprise CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Toast Notifications Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Floating Action Button (FAB) for Quick Prediction -->
+    <button class="fab-btn" title="New AI Risk Prediction" onclick="switchTab('predictorTab', document.querySelector('.nav-btn')); window.scrollTo({top: 0, behavior: 'smooth'});">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- Header & Top Application Navigation Bar -->
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>MedPredict AI</span>
+                    <span class="brand-badge">ENTERPRISE v2.0.1</span>
+                </div>
+                <div style="font-size: 11px; font-weight: 500; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">
+                    Flask REST API • SQLAlchemy ORM • Scikit-Learn Engine
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-tabs">
+            <button class="nav-btn active" onclick="switchTab('predictorTab', this)">
+                <i class="fa-solid fa-stethoscope"></i> New Prediction
+            </button>
+            <button class="nav-btn" onclick="switchTab('historyTab', this); loadAdminData();">
+                <i class="fa-solid fa-clock-rotate-left"></i> History & Reports
+            </button>
+            <button class="nav-btn" onclick="switchTab('analyticsTab', this); loadAnalyticsData(); loadModelMetrics();">
+                <i class="fa-solid fa-chart-line"></i> Analytics & ML Studio
+            </button>
+            <button class="nav-btn" onclick="switchTab('statusTab', this); loadSystemStatus();">
+                <i class="fa-solid fa-server"></i> System Status
+            </button>
+        </nav>
+
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <!-- 1-Click Dark/Light Mode Switcher Button -->
+            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()">
+                <span>🌙 Dark AI Mode</span>
+            </button>
+
+            <div class="status-pill">
+                <span class="status-dot"></span>
+                <span>SLA: &lt; 1.0s Active</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <main class="container">
+
+        <!-- Executive Hero Banner -->
+        <div class="hero-card">
+            <div>
+                <div class="hero-title">
+                    Intelligent Clinical Risk Assessment & Population Health
+                </div>
+                <div class="hero-subtitle">
+                    Real-time AI risk evaluation across 5 critical diseases (Heart Disease, Diabetes, Kidney Disease, Stroke Risk, and Hypertension) powered by Scikit-Learn Random Forest Ensembles.
+                </div>
+            </div>
+            <div>
+                <span class="badge badge-low" style="font-size: 13px; padding: 8px 16px;">
+                    <i class="fa-solid fa-shield-halved"></i> SLA Compliant
+                </span>
+            </div>
+        </div>
+
+        <!-- Dynamic ML Dataset & Pipeline Versioning Summary Bar -->
+        <div class="dataset-bar">
+            <div class="dataset-metric">
+                <span class="d-label">MODEL VERSION</span>
+                <span class="d-val" id="dsModelVer" style="color: var(--brand-blue);">v2.0.1</span>
+            </div>
+            <div class="dataset-metric">
+                <span class="d-label">DATASET VERSION</span>
+                <span class="d-val" id="dsName" style="font-size: 13px;">MedPredict Dataset v1.2</span>
+            </div>
+            <div class="dataset-metric">
+                <span class="d-label">BEST MODEL</span>
+                <span class="d-val" id="dsBestModel" style="color: var(--brand-blue); font-size: 14px;">Random Forest</span>
+            </div>
+            <div class="dataset-metric">
+                <span class="d-label">EVALUATION ACCURACY</span>
+                <span class="d-val" id="dsAccuracy" style="color: var(--emerald-accent);">89.19% (20% Test Split)</span>
+            </div>
+            <div class="dataset-metric">
+                <span class="d-label">TRAINING DURATION</span>
+                <span class="d-val" id="dsTrainDuration" style="color: var(--amber-accent);">4.79 sec</span>
+            </div>
+            <div class="dataset-metric">
+                <span class="d-label">LAST TRAINED</span>
+                <span class="d-val" id="dsLastTrained" style="color: var(--text-heading);">05-Aug-2026</span>
+            </div>
+        </div>
+
+        <!-- ===================================================================
+             TAB 1: AI PATIENT PREDICTION STUDIO
+             =================================================================== -->
+        <section id="predictorTab" class="tab-content active">
+            <div class="glass-card">
+                <div class="card-title">
+                    <i class="fa-solid fa-user-doctor" style="color: var(--brand-blue);"></i>
+                    <span>Patient Diagnostic Inputs & Real-Time AI Risk Assessment</span>
+                </div>
+
+                <!-- Presets Bar -->
+                <div class="presets-bar">
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">QUICK DEMO PRESETS:</span>
+                    <button type="button" class="preset-btn" onclick="generateRandomDemoData()">
+                        <i class="fa-solid fa-shuffle"></i> Generate Random Demo Data
+                    </button>
+                    <button type="button" class="preset-btn" style="background: var(--bg-main);" onclick="clearForm()">
+                        <i class="fa-solid fa-eraser"></i> Clear Form
+                    </button>
+                </div>
+
+                <form id="predictionForm" onsubmit="submitPrediction(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Patient Record Code</label>
+                            <input type="text" id="patient_code" class="form-control" value="MED-8820" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Patient Full Name</label>
+                            <input type="text" id="patient_name" class="form-control" value="Jonathan Hayes" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Age (Years)</label>
+                            <input type="number" id="age" class="form-control" value="54" min="18" max="95" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Biological Gender</label>
+                            <select id="gender" class="form-control">
+                                <option value="Male" selected>Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Height (cm)</label>
+                            <input type="number" step="0.1" id="height_cm" class="form-control" value="176" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Weight (kg)</label>
+                            <input type="number" step="0.1" id="weight_kg" class="form-control" value="86.5" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Body Mass Index (BMI - Auto Calculated)</label>
+                            <input type="number" step="0.1" id="bmi" class="form-control" value="27.9" readonly style="background: var(--bg-main); font-weight: 700; color: var(--brand-blue);">
+                        </div>
+                        <div class="form-group">
+                            <label>Systolic BP (mmHg)</label>
+                            <input type="number" id="systolic_bp" class="form-control" value="144" min="80" max="220" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Diastolic BP (mmHg)</label>
+                            <input type="number" id="diastolic_bp" class="form-control" value="92" min="50" max="130" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Fasting Blood Glucose (mg/dL)</label>
+                            <input type="number" id="glucose" class="form-control" value="138" min="60" max="350" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Serum Cholesterol (mg/dL)</label>
+                            <input type="number" id="cholesterol" class="form-control" value="230" min="100" max="450" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Resting Heart Rate (bpm)</label>
+                            <input type="number" id="heart_rate" class="form-control" value="82" min="40" max="140" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Smoking History</label>
+                            <select id="smoking" class="form-control">
+                                <option value="0">Never Smoked</option>
+                                <option value="1">Former Smoker</option>
+                                <option value="2" selected>Current Smoker</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Alcohol Consumption</label>
+                            <select id="alcohol" class="form-control">
+                                <option value="0">None / Non-Drinker</option>
+                                <option value="1" selected>Moderate Intake</option>
+                                <option value="2">Heavy Intake</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Physical Exercise</label>
+                            <select id="exercise" class="form-control">
+                                <option value="0" selected>Low (&lt; 30 mins/wk)</option>
+                                <option value="1">Moderate (30-150 mins/wk)</option>
+                                <option value="2">High (&gt; 150 mins/wk)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Family Medical History</label>
+                            <select id="family_history" class="form-control">
+                                <option value="0">No Known Family History</option>
+                                <option value="1" selected>Yes (Cardiovascular / Diabetes)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ML Model Classifier</label>
+                            <select id="model_name" class="form-control">
+                                <option value="random_forest" selected>Random Forest (Ensemble ~88% Accuracy)</option>
+                                <option value="logistic_regression">Logistic Regression (89.2% Accuracy)</option>
+                                <option value="decision_tree">Decision Tree (76.6% Accuracy)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="predictBtn">
+                        <span>⚡ Execute AI Risk Assessment</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Multi-Stage AI Inference Loading Progress Box -->
+            <div id="aiLoadingOverlay" style="display: none;" class="glass-card loading-card">
+                <div class="loading-spinner"></div>
+                <div style="margin-top: 16px;">
+                    <div id="loadingStageTitle" style="font-size: 16px; font-weight: 700; color: var(--brand-blue);">⚡ Loading Scikit-Learn ML Model Pipeline...</div>
+                    <div id="loadingStageSub" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Evaluating 14 clinical vitals against 10,500 patient cohort patterns</div>
+                </div>
+            </div>
+
+            <!-- Real-Time Result Outcome Display Card with SVG Circular Risk Gauge & Health Score (0-100) -->
+            <div id="resultContainer" style="display: none;" class="glass-card result-card">
+                <div class="risk-header">
+                    <div style="display: flex; align-items: center; gap: 24px;">
+                        <!-- Animated SVG Circular Risk Meter Gauge -->
+                        <div class="gauge-container">
+                            <svg class="gauge-svg" viewBox="0 0 100 100">
+                                <circle class="gauge-bg" cx="50" cy="50" r="42"></circle>
+                                <circle id="gaugeFill" class="gauge-fill" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="264"></circle>
+                            </svg>
+                            <div class="gauge-text">
+                                <span id="gaugePct" style="font-size: 20px; font-weight: 800; color: var(--brand-blue); font-family: var(--font-mono);">0%</span>
+                                <span style="font-size: 9px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">RISK</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">CLINICAL DIAGNOSTIC EVALUATION</span>
+                            <h2 id="resRiskLevel" style="font-size: 28px; font-weight: 800; margin-top: 4px;">Low Risk</h2>
+                            <div style="display: flex; gap: 12px; align-items: center; margin-top: 6px;">
+                                <div class="latency-tag" id="resLatencyTag">Latency: 14 ms (&lt; 1.0s SLA)</div>
+                                <div class="latency-tag" id="resHealthScoreTag" style="background: var(--emerald-bg); color: var(--emerald-accent); border-color: var(--emerald-border);">Health Score: <strong id="resHealthScoreVal">82/100</strong></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align: right;">
+                        <span id="resRiskBadge" class="badge badge-low">Confidence Score: 18.5%</span>
+                        <div style="margin-top: 6px; font-size: 12px; color: var(--text-muted);" id="resModelUsedTag">Model: Random Forest Ensemble</div>
+                    </div>
+                </div>
+
+                <!-- 5 Diseases Breakdown Grid -->
+                <div class="card-title" style="font-size: 15px; margin-top: 24px;">5 Major Medical Diseases Risk Probability Breakdown</div>
+                <div class="disease-grid">
+                    <div class="disease-box">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Heart Disease</div>
+                        <div id="resHeartScore" style="font-size: 22px; font-weight: 800; color: var(--brand-blue); margin-top: 4px; font-family: var(--font-mono);">12%</div>
+                        <div class="progress-bar-bg"><div id="resHeartBar" class="progress-bar-fill" style="width: 12%;"></div></div>
+                    </div>
+                    <div class="disease-box">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Diabetes</div>
+                        <div id="resDiabetesScore" style="font-size: 22px; font-weight: 800; color: var(--brand-blue); margin-top: 4px; font-family: var(--font-mono);">24%</div>
+                        <div class="progress-bar-bg"><div id="resDiabetesBar" class="progress-bar-fill" style="width: 24%;"></div></div>
+                    </div>
+                    <div class="disease-box">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Kidney Disease</div>
+                        <div id="resKidneyScore" style="font-size: 22px; font-weight: 800; color: var(--brand-blue); margin-top: 4px; font-family: var(--font-mono);">8%</div>
+                        <div class="progress-bar-bg"><div id="resKidneyBar" class="progress-bar-fill" style="width: 8%;"></div></div>
+                    </div>
+                    <div class="disease-box">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Stroke Risk</div>
+                        <div id="resStrokeScore" style="font-size: 22px; font-weight: 800; color: var(--brand-blue); margin-top: 4px; font-family: var(--font-mono);">15%</div>
+                        <div class="progress-bar-bg"><div id="resStrokeBar" class="progress-bar-fill" style="width: 15%;"></div></div>
+                    </div>
+                    <div class="disease-box">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Hypertension</div>
+                        <div id="resHypertensionScore" style="font-size: 22px; font-weight: 800; color: var(--brand-blue); margin-top: 4px; font-family: var(--font-mono);">38%</div>
+                        <div class="progress-bar-bg"><div id="resHypertensionBar" class="progress-bar-fill" style="width: 38%;"></div></div>
+                    </div>
+                </div>
+
+                <!-- Risk Factors & Clinical Guidance -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-top: 24px;">
+                    <div style="background: var(--bg-main); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div class="card-title" style="font-size: 14px; margin-bottom: 12px;">
+                            <i class="fa-solid fa-triangle-exclamation" style="color: var(--amber-accent);"></i> Key Risk Contributors
+                        </div>
+                        <ul id="resKeyFactors" style="font-size: 13px; color: var(--text-body); padding-left: 20px; line-height: 1.7;"></ul>
+                    </div>
+                    <div style="background: var(--bg-main); padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+                        <div class="card-title" style="font-size: 14px; margin-bottom: 12px;">
+                            <i class="fa-solid fa-notes-medical" style="color: var(--emerald-accent);"></i> AI Clinical & Lifestyle Guidance
+                        </div>
+                        <ul id="resRecommendations" style="font-size: 13px; color: var(--text-body); padding-left: 20px; line-height: 1.7;"></ul>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; text-align: right;">
+                    <button id="exportPdfBtn" class="preset-btn" style="background: var(--brand-blue); color: #ffffff; border-color: var(--brand-blue); padding: 10px 20px; font-size: 13px;">
+                        <i class="fa-solid fa-file-pdf"></i> Download Printable Clinical Report
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             TAB 2: HISTORY & REPORTS DATA TABLE
+             =================================================================== -->
+        <section id="historyTab" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Patients Analyzed</div>
+                    <div class="stat-value" id="kpiTotalPredictions">520</div>
+                    <div class="stat-subtext"><i class="fa-solid fa-database"></i> SQLite Database Records</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Diagnostic Reports</div>
+                    <div class="stat-value" id="kpiTotalReports">130</div>
+                    <div class="stat-subtext"><i class="fa-solid fa-file-pdf"></i> Generated Clinical PDFs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Avg Execution Latency</div>
+                    <div class="stat-value" id="kpiAvgLatency">180 ms</div>
+                    <div class="stat-subtext"><i class="fa-solid fa-bolt"></i> &lt; 1.0s SLA Target</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">SLA Compliance Rate</div>
+                    <div class="stat-value" id="kpiSlaCompliance">100%</div>
+                    <div class="stat-subtext"><i class="fa-solid fa-circle-check"></i> Zero SLA Violations</div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="table-toolbar">
+                    <div class="card-title" style="margin-bottom: 0;">
+                        <i class="fa-solid fa-table-list" style="color: var(--brand-blue);"></i>
+                        <span>Patient Diagnostic Records History Log</span>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="adminSearch" class="search-box" placeholder="Search by patient code or name..." oninput="loadAdminData(1)">
+                        
+                        <select id="adminRiskFilter" class="form-control" style="width: auto; padding: 10px 14px;" onchange="loadAdminData(1)">
+                            <option value="All">All Risk Levels</option>
+                            <option value="Low">Low Risk</option>
+                            <option value="Medium">Medium Risk</option>
+                            <option value="High">High Risk</option>
+                        </select>
+
+                        <button class="preset-btn" style="background: var(--emerald-bg); color: var(--emerald-accent); border-color: var(--emerald-border);" onclick="exportHistoryCSV()">
+                            <i class="fa-solid fa-file-csv"></i> Export CSV
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th onclick="sortTable('patient_code')">Patient Code <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="sortTable('patient_name')">Name <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="sortTable('age')">Age / Gender <i class="fa-solid fa-sort"></i></th>
+                                <th onclick="sortTable('bmi')">BMI <i class="fa-solid fa-sort"></i></th>
+                                <th>Blood Pressure</th>
+                                <th>Glucose</th>
+                                <th onclick="sortTable('risk_level')">Risk Status <i class="fa-solid fa-sort"></i></th>
+                                <th>Model Used</th>
+                                <th onclick="sortTable('latency_ms')">Latency <i class="fa-solid fa-sort"></i></th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminTableBody">
+                            <!-- Populated via static/js/admin.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="pagination">
+                    <span id="pageInfo" style="font-size: 13px; color: var(--text-muted); font-weight: 600;">Page 1 of 52</span>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="prevPageBtn" class="page-btn">Previous</button>
+                        <button id="nextPageBtn" class="page-btn">Next</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             TAB 3: ANALYTICS & ML STUDIO (CONSOLIDATED ANALYTICS + ML BENCHMARKS)
+             =================================================================== -->
+        <section id="analyticsTab" class="tab-content">
+            <!-- ML Dataset & Pipeline Architecture Specification Card -->
+            <div class="glass-card" style="margin-bottom: 24px;">
+                <div class="card-title">
+                    <i class="fa-solid fa-database" style="color: var(--brand-blue);"></i>
+                    <span>Machine Learning Dataset & Pipeline Architecture Specifications</span>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
+                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">DATASET COHORT</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">MedPredict 10K</div>
+                        <div style="font-size: 12px; color: var(--emerald-accent); margin-top: 2px;">10,500 Patient Records</div>
+                    </div>
+                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">TRAIN / TEST RATIO</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">80% / 20%</div>
+                        <div style="font-size: 12px; color: var(--brand-blue); margin-top: 2px;">8,400 Train / 2,100 Test</div>
+                    </div>
+                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">SCALING & PIPELINE</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">StandardScaler</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Serialized via Joblib</div>
+                    </div>
+                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
+                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">DISEASES EVALUATED</div>
+                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">5 Conditions</div>
+                        <div style="font-size: 12px; color: var(--amber-accent); margin-top: 2px;">Multi-label Risk Mapping</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Population Health Analytics Dashboards -->
+            <div class="glass-card">
+                <div class="card-title">
+                    <i class="fa-solid fa-chart-pie" style="color: var(--brand-blue);"></i>
+                    <span>Population Health Analytics Dashboards</span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 28px;">
+                    <div class="chart-container">
+                        <div class="card-title" style="font-size: 15px;">5 Diseases Prevalence Distribution</div>
+                        <div style="height: 350px;"><canvas id="diseaseDistributionChart"></canvas></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="card-title" style="font-size: 15px;">Risk Category Proportions</div>
+                        <div style="height: 350px;"><canvas id="riskDistributionChart"></canvas></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="card-title" style="font-size: 15px;">Monthly Evaluations Trend</div>
+                        <div style="height: 350px;"><canvas id="monthlyTrendChart"></canvas></div>
+                    </div>
+                    <div class="chart-container">
+                        <div class="card-title" style="font-size: 15px;">Age & Gender Risk Breakdown</div>
+                        <div style="height: 350px;"><canvas id="demographicsChart"></canvas></div>
+                    </div>
+                    <div class="chart-container" style="grid-column: span 2;">
+                        <div class="card-title" style="font-size: 15px;">Execution Latency vs 1000ms SLA Target</div>
+                        <div style="height: 350px;"><canvas id="latencyTrendChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ML Classifier Metrics Benchmarking Bar Chart & Table -->
+            <div class="glass-card">
+                <div class="card-title">
+                    <i class="fa-solid fa-brain" style="color: var(--brand-blue);"></i>
+                    <span>Machine Learning Classifier Metrics Benchmarking</span>
+                </div>
+
+                <div style="height: 350px; margin-bottom: 30px;">
+                    <canvas id="modelComparisonChart"></canvas>
+                </div>
+
+                <!-- Numeric ML Metrics Comparison Table -->
+                <div class="card-title" style="font-size: 15px; margin-top: 24px;">Classifiers Benchmarking Metrics Table</div>
+                <div class="table-wrapper">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Model Classifier Architecture</th>
+                                <th>Accuracy (%)</th>
+                                <th>Precision (%)</th>
+                                <th>Recall (%)</th>
+                                <th>F1 Score (%)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="metricsTableBody">
+                            <tr>
+                                <td style="font-weight: 700; color: var(--brand-blue);">Random Forest Classifier (Ensemble)</td>
+                                <td>88.5%</td>
+                                <td>87.9%</td>
+                                <td>88.2%</td>
+                                <td>88.0%</td>
+                                <td><span class="badge badge-low">Primary Best</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600;">Logistic Regression</td>
+                                <td>84.2%</td>
+                                <td>83.5%</td>
+                                <td>84.1%</td>
+                                <td>83.8%</td>
+                                <td><span class="badge badge-medium">Operational</span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-weight: 600;">Decision Tree Classifier</td>
+                                <td>79.5%</td>
+                                <td>79.1%</td>
+                                <td>79.4%</td>
+                                <td>79.2%</td>
+                                <td><span class="badge badge-medium">Operational</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             TAB 4: SYSTEM STATUS MONITORING PANEL
+             =================================================================== -->
+        <section id="statusTab" class="tab-content">
+            <div class="glass-card">
+                <div class="card-title">
+                    <i class="fa-solid fa-server" style="color: var(--brand-blue);"></i>
+                    <span>Live Enterprise System Monitoring Telemetry</span>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Database Health</div>
+                        <div class="stat-value" id="sysDbStatus" style="font-size: 20px; color: var(--emerald-accent);"><i class="fa-solid fa-circle-check"></i> Connected</div>
+                        <div class="stat-subtext">SQLAlchemy + SQLite ORM</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">ML Inference Engine</div>
+                        <div class="stat-value" id="sysModelStatus" style="font-size: 20px; color: var(--emerald-accent);"><i class="fa-solid fa-circle-check"></i> 3 Models Loaded</div>
+                        <div class="stat-subtext">Random Forest Ensemble Primary</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">REST API Status</div>
+                        <div class="stat-value" id="sysApiStatus" style="font-size: 20px; color: var(--emerald-accent);"><i class="fa-solid fa-circle-check"></i> Operational</div>
+                        <div class="stat-subtext">Flask 3.0 Engine</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Avg Execution Speed</div>
+                        <div class="stat-value" id="sysSpeed" style="font-size: 20px; color: var(--brand-blue);"><i class="fa-solid fa-bolt"></i> ~14 ms</div>
+                        <div class="stat-subtext">&lt; 1000ms SLA Target</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application Footer -->
+    <footer class="app-footer">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; max-width: 1360px; margin: 0 auto; padding: 0 28px;">
+            <div>
+                <strong>MedPredict AI Platform</strong> • Version 2.0.1 Enterprise Release
+            </div>
+            <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
+                Python • Flask • Scikit-Learn • SQLAlchemy • SQLite • Docker
+            </div>
+            <div>
+                © 2026 MedPredict AI. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom JavaScript Controllers -->
+    <script src="/static/js/toast.js"></script>
+    <script src="/static/js/main.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Database Files
+*.db
+*.sqlite3
+
+# IDE & Editor Settings
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Logs & Temporary Task Logs
+*.log
+.system_generated/
+.gemini/
+
+# Build & Distribution
+build/
+dist/
+*.egg-info/
+__pycache__/
+*.pyc
+*.sqlite3
+*.db
+.venv/
+venv/
+.env
+.vscode/
+.idea/

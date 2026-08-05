@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  medpredict-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medpredict_ai_platform
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=medpredict-ai-production-super-secret-key-2026
+      - SLA_LATENCY_MAX_MS=1000.0
+      - PORT=5000
+    volumes:
+      - ./database:/app/database
+      - ./trained_models:/app/trained_models
+      - ./reports:/app/reports
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

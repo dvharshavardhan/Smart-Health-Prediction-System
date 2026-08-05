@@ -1,0 +1,97 @@
+{
+  "logistic_regression": {
+    "accuracy": 0.8919,
+    "precision": 0.8935,
+    "recall": 0.8919,
+    "f1_score": 0.8924,
+    "confusion_matrix": [
+      [
+        688,
+        68,
+        0
+      ],
+      [
+        49,
+        705,
+        44
+      ],
+      [
+        0,
+        66,
+        480
+      ]
+    ]
+  },
+  "decision_tree": {
+    "accuracy": 0.7662,
+    "precision": 0.7699,
+    "recall": 0.7662,
+    "f1_score": 0.7674,
+    "confusion_matrix": [
+      [
+        625,
+        131,
+        0
+      ],
+      [
+        111,
+        582,
+        105
+      ],
+      [
+        0,
+        144,
+        402
+      ]
+    ]
+  },
+  "random_forest": {
+    "accuracy": 0.8343,
+    "precision": 0.8426,
+    "recall": 0.8343,
+    "f1_score": 0.8359,
+    "confusion_matrix": [
+      [
+        637,
+        119,
+        0
+      ],
+      [
+        62,
+        681,
+        55
+      ],
+      [
+        0,
+        112,
+        434
+      ]
+    ]
+  },
+  "model_version": "v2.0.1",
+  "dataset_version": "MedPredict Dataset v1.2",
+  "dataset_name": "MedPredict Synthetic Clinical Dataset",
+  "dataset_size": 10500,
+  "train_size": 8400,
+  "test_size": 2100,
+  "feature_cols": [
+    "age",
+    "gender_code",
+    "height_cm",
+    "weight_kg",
+    "bmi",
+    "systolic_bp",
+    "diastolic_bp",
+    "glucose",
+    "cholesterol",
+    "heart_rate",
+    "smoking",
+    "alcohol",
+    "exercise",
+    "family_history"
+  ],
+  "training_duration_sec": 4.79,
+  "trained_at": "2026-08-05T07:24:10Z",
+  "trained_at_display": "05-Aug-2026",
+  "best_model": "logistic_regression"
+}
