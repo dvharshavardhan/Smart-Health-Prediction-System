@@ -119,56 +119,6 @@ Flask 3.0 Application Server (app.py)
 
 ---
 
-## 📁 Project Folder Structure
-
-```text
-Smart-Health-Prediction-System/
-├── 📁 .github/
-│   └── 📁 workflows/
-│       └── ci.yml             # GitHub Actions CI Workflow Pipeline
-├── app.py                     # Flask REST API Controller & Route Handlers
-├── config.py                  # Environment Configuration & Path Directory Manager
-├── Dockerfile                 # Multi-Stage Docker Build
-├── docker-compose.yml         # Container Orchestration Specification
-├── .env.example               # Environment Variables Template
-├── .gitignore                 # Version Control Exclusions
-├── LICENSE                    # MIT License
-├── requirements.txt            # Python Dependencies Specification
-├── README.md                  # Comprehensive Documentation
-├── 📁 database/
-│   ├── db.py                  # Database Connection & Automated Seeder (520+ Records)
-│   ├── models.py              # Patient, Prediction, ModelMetric, ReportLog Schemas
-│   └── medpredict.db          # SQLite Database Storage File
-├── 📁 datasets/
-│   ├── generate_dataset.py    # 10,500 Clinical Dataset Generator Script
-│   └── medpredict_10k.csv     # Serialized Training Dataset
-├── 📁 demo/
-│   └── README.md              # Demonstration Video Guide & Assets
-├── 📁 ml/
-│   ├── trainer.py             # Model Training, Cross-Validation & Metric Serializer
-│   └── predictor.py           # Real-Time Multi-Disease Risk Inference Engine
-├── 📁 reports/
-│   └── generator.py           # Printable PDF/HTML Clinical Exporter & CSV Data Streamer
-├── 📁 screenshots/
-│   └── README.md              # Screenshots Repository Guide
-├── 📁 static/
-│   ├── 📁 css/
-│   │   └── style.css          # Glassmorphic Design System & Dual-Theme CSS
-│   └── 📁 js/
-│       ├── main.js            # Core App Controller & Input Validator
-│       ├── toast.js           # Floating Toast Notification Engine
-│       ├── charts.js          # 6-Chart Visual Dashboard Controller
-│       └── admin.js           # History Table & Dynamic Metrics Binding
-├── 📁 templates/
-│   └── index.html             # Consolidated Dashboard Single-Page HTML
-├── 📁 trained_models/
-│   └── metrics.json           # Serialized Model Metrics & Versioning Data
-└── 📁 tests/
-    └── test_app.py            # Automated Unittest Suite (12/12 Passed)
-```
-
----
-
 ## 🚀 Installation Guide
 
 ### Requirements
