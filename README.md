@@ -19,7 +19,7 @@
 
 ## 📌 Project Overview
 
-**Smart Health Prediction System** is a full-stack clinical risk evaluation and population health analytics platform. Designed using standard software engineering practices, the system integrates a **Python/Flask REST API**, **SQLAlchemy ORM database engine**, **Docker containerization**, **GitHub Actions CI/CD**, and a multi-model **Machine Learning pipeline** (Random Forest Ensemble, Logistic Regression, Decision Tree) optimized for low-latency risk evaluation across 5 critical medical conditions.
+**Smart Health Prediction System** is a full-stack clinical risk evaluation and population health analytics platform. Designed using standard software engineering practices, the system integrates a **Python/Flask REST API**, **SQLAlchemy ORM database engine**, **Docker containerization**, **Render Cloud WSGI Deployment**, and a multi-model **Machine Learning pipeline** (Random Forest Ensemble, Logistic Regression, Decision Tree) optimized for low-latency risk evaluation across 5 critical medical conditions.
 
 The platform provides healthcare professionals with diagnostic risk scores, calculated health indexes (0–100), key risk factor interpretability, lifestyle recommendations, downloadable clinical PDF reports with QR verification, and interactive Chart.js analytics dashboards.
 
@@ -45,7 +45,7 @@ The platform provides healthcare professionals with diagnostic risk scores, calc
 * **🗄️ Indexed Patient Records History**: Supports multi-criteria filtering, search, interactive column header sorting, and CSV data stream exports.
 * **🏷️ Pipeline & Model Versioning**: Dynamic tracking of model version (`v2.0.1`), dataset version (`Smart Health Dataset v1.2`), training execution duration (`3.36s`), and training timestamps.
 * **🧪 Automated Test Suite**: 100% pass rate across 12 automated unit tests validating API routes, SLA compliance (< 1000ms), ORM persistence, and ML predictions.
-* **🐳 Docker Ready**: Multi-stage Docker containerization, Docker Compose orchestration, and automated GitHub Actions CI testing.
+* **🌐 Cloud Deployment Ready**: Deployed on Render Cloud with Gunicorn WSGI web server, Docker support, and automatic deployment via GitHub repository.
 
 ---
 
@@ -304,9 +304,6 @@ SQLAlchemy Audit Trail Logging & 6-Chart Analytics Dashboard
 
 ```text
 Smart-Health-Prediction-System/
-├── 📁 .github/
-│   └── 📁 workflows/
-│       └── ci.yml             # GitHub Actions Automated CI Build & Test Pipeline
 ├── app.py                     # Flask REST API Application Router & Middleware
 ├── config.py                  # Environment Configuration & Path Directory Manager
 ├── Dockerfile                 # Multi-Stage Docker Container Build Specification
