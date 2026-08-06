@@ -5,6 +5,15 @@
 [![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey.svg)](https://www.sqlite.org/)
 [![Docker](https://img.shields.io/badge/Docker-Enabled-blue.svg)](Dockerfile)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-brightgreen.svg)](https://smart-health-prediction-system-gza7.onrender.com)
+
+---
+
+## 🚀 Live Demo
+
+🌐 **Live Production Application**: [https://smart-health-prediction-system-gza7.onrender.com](https://smart-health-prediction-system-gza7.onrender.com)
+
+> ℹ️ **Note**: Deployed on Render Cloud. If inactive, the service spins down automatically and may take ~30 seconds for initial cold-start spin up.
 
 ---
 
