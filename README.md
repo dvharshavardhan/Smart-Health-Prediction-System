@@ -8,6 +8,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Live Demo](https://img.shields.io/badge/Live_Demo-Render-brightgreen.svg)](https://smart-health-prediction-system-gza7.onrender.com)
 [![GitHub Stars](https://img.shields.io/github/stars/dvharshavardhan/Smart-Health-Prediction-System?style=social)](https://github.com/dvharshavardhan/Smart-Health-Prediction-System)
+[![CI Build Status](https://github.com/dvharshavardhan/Smart-Health-Prediction-System/actions/workflows/ci.yml/badge.svg)](https://github.com/dvharshavardhan/Smart-Health-Prediction-System/actions)
+
 
 > **Enterprise-grade AI-powered clinical decision support platform built with Flask, Scikit-learn, SQLAlchemy, SQLite, Docker, and deployed on Render Cloud for real-time multi-disease risk assessment and healthcare analytics.**
 
@@ -144,6 +146,8 @@ The system is trained and benchmarked on the **Smart Health Synthetic Dataset v1
 ---
 
 ## 🏗️ System Architecture
+
+![System Architecture Diagram](screenshots/architecture.png)
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────┐
