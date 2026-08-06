@@ -31,11 +31,13 @@
 - [Key Features](#-key-features)
 - [Key Achievements](#-key-achievements)
 - [Technology Stack](#%EF%B8%8F-technology-stack)
+- [Project Directory Structure](#-project-directory-structure)
 - [Machine Learning Pipeline](#-machine-learning-pipeline)
 - [System Architecture](#%EF%B8%8F-system-architecture)
 - [Visual UI Previews](#-visual-ui-previews)
 - [Installation Guide](#-installation-guide)
 - [REST API Documentation](#-rest-api-documentation)
+  - [Sample API Request & Response](#-sample-api-request--response-postapipredict)
 - [Deployment Instructions](#-deployment-instructions)
 - [Testing](#-testing)
 - [Future Enhancements](#-future-enhancements)
@@ -111,6 +113,24 @@ The platform provides healthcare professionals with diagnostic risk scores, calc
 | **Cloud Hosting** | Render Cloud |
 
 ---
+
+## 📂 Project Directory Structure
+
+```text
+Smart-Health-Prediction-System/
+├── app.py                  # Main Flask REST API & routing controllers
+├── config.py               # Application configuration manager
+├── requirements.txt        # Python package dependencies specification
+├── Dockerfile              # Multi-stage container setup
+├── docker-compose.yml      # Orchestration manifest
+├── database/               # Relational SQLite database models & seeder scripts
+├── datasets/               # Pre-processed clinical datasets (10k cohorts)
+├── ml/                     # ML training, cross-validation & serialization modules
+├── reports/                # ReportLab PDF clinical generator
+├── static/                 # CSS design systems, dynamic JS controllers
+├── templates/              # HTML layout pages
+└── tests/                  # Unittest automated assertions
+```
 
 ## 🧠 Machine Learning Pipeline
 
@@ -268,6 +288,65 @@ The system is trained and benchmarked on the **Smart Health Synthetic Dataset v1
 | `GET /api/reports/csv_export` | `GET` | Streams patient history dataset as CSV file | `text/csv` | `200 OK` |
 | `DELETE /api/prediction/<id>` | `DELETE` | Removes patient prediction record from database | `application/json` | `200 OK` |
 | `GET /api/health` | `GET` | Heartbeat & SLA verification status | `application/json` | `200 OK` |
+
+### 📡 Sample API Request & Response (`POST /api/predict`)
+
+#### Request Payload
+```json
+{
+  "name": "Jonathan Hayes",
+  "age": 54,
+  "gender": "Male",
+  "height": 176,
+  "weight": 86.5,
+  "systolic_bp": 144,
+  "diastolic_bp": 92,
+  "glucose": 138,
+  "cholesterol": 230,
+  "heart_rate": 82,
+  "smoking": "Current Smoker",
+  "alcohol": "Moderate Intake",
+  "exercise": "Low (< 30 mins/wk)",
+  "family_history": "Yes",
+  "model_type": "random_forest"
+}
+```
+
+#### Response Payload (`200 OK`)
+```json
+{
+  "success": true,
+  "record_id": 521,
+  "patient_code": "MED-8820",
+  "risk_level": "Medium",
+  "confidence": "59.7%",
+  "health_score": 49,
+  "probabilities": {
+    "Heart Disease": "86.7%",
+    "Diabetes": "55.4%",
+    "Kidney Disease": "58.9%",
+    "Stroke": "63.5%",
+    "Hypertension": "81.1%"
+  },
+  "risk_contributors": [
+    "Elevated Systolic Blood Pressure (144 mmHg)",
+    "Elevated Diastolic Blood Pressure (92 mmHg)",
+    "Elevated BMI / Overweight (27.9 kg/m²)",
+    "Elevated Fasting Blood Glucose (138 mg/dL)",
+    "Elevated Serum Cholesterol (230 mg/dL)",
+    "Tobacco Use / Smoking History",
+    "Sedentary Physical Activity",
+    "Genetic / Family Medical History"
+  ],
+  "recommendations": [
+    "Increase moderate aerobic physical activity to 150+ minutes per week.",
+    "Reduce intake of refined carbohydrates and saturated fats.",
+    "Schedule a routine 6-month preventive health screening.",
+    "Maintain consistent hydration and stress reduction routines."
+  ],
+  "latency_ms": 14.2
+}
+```
 
 ---
 
