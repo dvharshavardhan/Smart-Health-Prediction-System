@@ -213,13 +213,14 @@ docker run -d -p 5000:5000 --name health_app smart-health-prediction:latest
 
 | Screen | View |
 | :--- | :--- |
-| **Home Overview Dashboard** | ![Home Overview](screenshots/dashboard.png) |
-| **AI Risk Assessment Studio** | ![Prediction Studio](screenshots/prediction.png) |
-| **Patient History & Reports Log** | ![Patient History](screenshots/history.png) |
-| **Population Health Analytics Studio** | ![Visual Analytics](screenshots/analytics.png) |
-| **ML Benchmarks & Model Architecture** | ![ML Benchmarks](screenshots/benchmarks.png) |
-| **System Telemetry & Live Status** | ![System Telemetry](screenshots/status.png) |
-| **Printable Clinical PDF Diagnostic Report** | ![Diagnostic Report](screenshots/report.png) |
+| **🏠 Home Overview Dashboard** | ![Home Overview](screenshots/dashboard.png) |
+| **🩺 New Clinical Prediction Form** | ![New Prediction Form](screenshots/prediction.png) |
+| **🤖 AI Diagnostic Risk Results** | ![AI Prediction Results](screenshots/prediction.png) |
+| **📊 Population Health Analytics Studio** | ![Visual Analytics](screenshots/analytics.png) |
+| **📈 ML Benchmarks & Model Architecture** | ![ML Benchmarks](screenshots/benchmarks.png) |
+| **📋 Patient Diagnostic History & Reports** | ![Patient History](screenshots/history.png) |
+| **📡 System Telemetry & Live Status** | ![System Telemetry](screenshots/status.png) |
+| **📄 Printable Clinical PDF Diagnostic Report** | ![Diagnostic Report](screenshots/report.png) |
 
 ---
 
