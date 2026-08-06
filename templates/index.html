@@ -196,16 +196,24 @@
             
             <!-- Welcome Section Card -->
             <div class="welcome-card">
-                <span class="welcome-badge"><i class="fa-solid fa-shield-heart"></i> Enterprise Clinical Decision Support Platform</span>
-                <h1 class="welcome-title">Smart Health Prediction System</h1>
-                <p class="welcome-subtitle">AI-powered healthcare analytics platform for clinical risk assessment and multi-disease prediction.</p>
-                <div class="welcome-buttons">
-                    <button class="btn-primary" onclick="switchTab('predictorTab', document.querySelectorAll('.nav-btn')[1]); window.scrollTo({top: 0, behavior: 'smooth'});">
-                        <i class="fa-solid fa-stethoscope"></i> Start New Prediction
-                    </button>
-                    <button class="btn-secondary" onclick="switchTab('analyticsTab', document.querySelectorAll('.nav-btn')[3]); loadAnalyticsData(); loadModelMetrics();">
-                        <i class="fa-solid fa-chart-line"></i> View Analytics
-                    </button>
+                <div class="welcome-left">
+                    <span class="welcome-badge"><i class="fa-solid fa-shield-heart"></i> Enterprise Clinical Decision Support Platform</span>
+                    <h1 class="welcome-title">Smart Health Prediction System</h1>
+                    <p class="welcome-subtitle">AI-powered healthcare analytics platform for clinical risk assessment and multi-disease prediction.</p>
+                    <div class="welcome-buttons">
+                        <button class="btn-primary" onclick="switchTab('predictorTab', document.querySelectorAll('.nav-btn')[1]); window.scrollTo({top: 0, behavior: 'smooth'});">
+                            <i class="fa-solid fa-stethoscope"></i> Start New Prediction
+                        </button>
+                        <button class="btn-secondary" onclick="switchTab('analyticsTab', document.querySelectorAll('.nav-btn')[3]); loadAnalyticsData(); loadModelMetrics();">
+                            <i class="fa-solid fa-chart-line"></i> View Analytics
+                        </button>
+                    </div>
+                </div>
+                <div class="welcome-illustration">
+                    <div class="hero-svg-badge">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        <span class="pulse-ring"></span>
+                    </div>
                 </div>
             </div>
 
@@ -706,23 +714,23 @@
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 28px;">
                     <div class="chart-container">
                         <div class="card-title" style="font-size: 15px;">5 Diseases Prevalence Distribution</div>
-                        <div style="height: 350px;"><canvas id="diseaseDistributionChart"></canvas></div>
+                        <div style="height: 380px;"><canvas id="diseaseDistributionChart"></canvas></div>
                     </div>
                     <div class="chart-container">
                         <div class="card-title" style="font-size: 15px;">Risk Category Proportions</div>
-                        <div style="height: 350px;"><canvas id="riskDistributionChart"></canvas></div>
+                        <div style="height: 380px;"><canvas id="riskDistributionChart"></canvas></div>
                     </div>
                     <div class="chart-container">
                         <div class="card-title" style="font-size: 15px;">Monthly Evaluations Trend</div>
-                        <div style="height: 350px;"><canvas id="monthlyTrendChart"></canvas></div>
+                        <div style="height: 380px;"><canvas id="monthlyTrendChart"></canvas></div>
                     </div>
                     <div class="chart-container">
                         <div class="card-title" style="font-size: 15px;">Age & Gender Risk Breakdown</div>
-                        <div style="height: 350px;"><canvas id="demographicsChart"></canvas></div>
+                        <div style="height: 380px;"><canvas id="demographicsChart"></canvas></div>
                     </div>
                     <div class="chart-container" style="grid-column: span 2;">
                         <div class="card-title" style="font-size: 15px;">Execution Latency vs 1000ms SLA Target</div>
-                        <div style="height: 350px;"><canvas id="latencyTrendChart"></canvas></div>
+                        <div style="height: 380px;"><canvas id="latencyTrendChart"></canvas></div>
                     </div>
                 </div>
             </div>
@@ -823,9 +831,12 @@
              =================================================================== -->
         <section id="statusTab" class="tab-content">
             <div class="glass-card">
-                <div class="card-title">
-                    <i class="fa-solid fa-server" style="color: var(--brand-blue);"></i>
-                    <span>Live Telemetry Panel</span>
+                <div class="card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <i class="fa-solid fa-server" style="color: var(--brand-blue);"></i>
+                        <span>Live Telemetry Panel</span>
+                    </div>
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 500; font-family: var(--font-mono); background: var(--bg-hover); padding: 4px 10px; border-radius: 12px; border: 1px solid var(--border-subtle);"><i class="fa-solid fa-clock"></i> Last Updated: 06 Aug 2026 12:41 PM</span>
                 </div>
 
                 <div class="stats-grid">

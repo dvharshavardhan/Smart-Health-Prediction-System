@@ -608,6 +608,54 @@ body.sidebar-collapsed .sidebar-footer {
     padding: 28px 32px;
     margin-bottom: 24px;
     box-shadow: var(--shadow-card);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-left {
+    flex: 1;
+    max-width: 720px;
+}
+
+.welcome-illustration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 12px;
+}
+
+.hero-svg-badge {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: var(--brand-blue-bg);
+    border: 1px solid var(--border-color);
+    color: var(--brand-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    position: relative;
+    box-shadow: var(--shadow-md);
+}
+
+.pulse-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    border: 2px solid var(--brand-blue);
+    opacity: 0.4;
+    animation: pulseRing 2.5s infinite ease-out;
+}
+
+@keyframes pulseRing {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    100% { transform: scale(1.35); opacity: 0; }
 }
 
 .welcome-badge {
@@ -964,7 +1012,7 @@ body.sidebar-collapsed .sidebar-footer {
 }
 
 .saas-table th {
-    background: var(--bg-main);
+    background: var(--bg-card);
     color: var(--text-muted);
     font-size: 11px;
     font-weight: 700;
@@ -972,6 +1020,10 @@ body.sidebar-collapsed .sidebar-footer {
     letter-spacing: 0.5px;
     padding: 12px 16px;
     border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .saas-table td {
