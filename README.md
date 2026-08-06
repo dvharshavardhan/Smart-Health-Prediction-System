@@ -30,11 +30,12 @@ The platform provides healthcare professionals with diagnostic risk scores, calc
 
 * **⚡ Low-Latency AI Risk Assessment**: Evaluates 14 clinical vitals in real time (< 20ms execution latency).
 * **🎯 Multi-Disease Risk Evaluation**: Simultaneous probability scoring for Heart Disease, Diabetes, Chronic Kidney Disease, Stroke Risk, and Hypertension.
-* **🎨 Modern Glassmorphic Interface**: Dual-theme UI (Clinical Light & Dark AI Mode) with dynamic CSS variables and skeleton loading overlays.
-* **📊 Population Health Analytics Studio**: 6 interactive Chart.js visual dashboards tracking prevalence distributions, monthly trends, and SLA telemetry.
+* **🎨 Modern Enterprise SaaS Interface**: Dual-theme UI (Clinical Light & Dark AI Mode toggle switch), animated sidebar widgets, clickable breadcrumb navigation, and multi-stage loading progress.
+* **📊 Population Health Analytics Studio**: 6 interactive Chart.js visual dashboards with rounded bars, prevalence distributions, monthly trends, and SLA telemetry.
 * **🏥 Printable Clinical Diagnostic Reports**: Generates formal PDF/HTML diagnostic reports complete with hospital letterhead, vitals matrix, ML model lineage, and QR verification badges.
 * **🗄️ Indexed Patient Records History**: Supports multi-criteria filtering, search, interactive column header sorting, and CSV data stream exports.
 * **🏷️ Pipeline & Model Versioning**: Dynamic tracking of model version (`v2.0.1`), dataset version (`Smart Health Dataset v1.2`), training execution duration (`3.36s`), and training timestamps.
+* **🧪 Automated Test Suite**: 100% pass rate across 12 automated unit tests validating API routes, SLA compliance (< 1000ms), ORM persistence, and ML predictions.
 * **🐳 Docker Ready**: Multi-stage Docker containerization, Docker Compose orchestration, and automated GitHub Actions CI testing.
 
 ---
@@ -163,7 +164,7 @@ Smart-Health-Prediction-System/
 ├── 📁 trained_models/
 │   └── metrics.json           # Serialized Model Metrics & Versioning Data
 └── 📁 tests/
-    └── test_app.py            # Automated Unittest Suite (8/8 Passed)
+    └── test_app.py            # Automated Unittest Suite (12/12 Passed)
 ```
 
 ---
@@ -251,34 +252,229 @@ docker run -d -p 5000:5000 --name health_app smart-health-prediction:latest
 
 ## 📸 Project Screenshots
 
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Prediction
-![Prediction](screenshots/prediction.png)
-
-### Analytics
-![Analytics](screenshots/analytics.png)
-
-### History
-![History](screenshots/history.png)
-
-### Reports
-![Reports](screenshots/report.png)
+| Screen | View |
+| :--- | :--- |
+| **Home Overview Dashboard** | ![Home Overview](screenshots/dashboard.png) |
+| **AI Risk Assessment Studio** | ![Prediction Studio](screenshots/prediction.png) |
+| **Patient History & Reports Log** | ![Patient History](screenshots/history.png) |
+| **Population Health Analytics Studio** | ![Visual Analytics](screenshots/analytics.png) |
+| **ML Benchmarks & Model Architecture** | ![ML Benchmarks](screenshots/benchmarks.png) |
+| **System Telemetry & Live Status** | ![System Telemetry](screenshots/status.png) |
+| **Printable Clinical PDF Diagnostic Report** | ![Diagnostic Report](screenshots/report.png) |
 
 ---
 
-## 🎥 Demo Video
+## 🎥 Demo Video (30–60 Seconds Walkthrough)
 
-Watch the complete demonstration video here:
+Watch the complete demonstration video showcasing real-time vital input, multi-stage AI inference execution, SVG risk gauge rendering, Chart.js analytics studio, dark mode toggle, and PDF report downloads:
 
-*(Coming Soon — Video demonstration link will be added upon upload)*
+> 🎬 **Demo Video Link**: [Watch 60-Second Video Demonstration](demo/README.md)
+
+---
+
+## 🏗️ System Architecture Diagram
+
+```text
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           CLIENT BROWSER LAYER                          │
+│   Single Page Application (HTML5 / Vanilla CSS / ES6 JS / Chart.js)     │
+│   • Dark AI Mode Toggle   • Interactive Charts   • SVG Gauge Meter      │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ REST API (JSON / HTTP)
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           FLASK APPLICATION SERVER                      │
+│   app.py (Flask 3.0 Engine & Request Router)                            │
+│   ├── Latency Tracker Middleware (@before_request / @after_request)     │
+│   ├── Input Validation & Error Handling Layer                           │
+│   └── Multi-Criteria Search & Filter Controller                         │
+└──────────────┬─────────────────────┬───────────────────┬────────────────┘
+               │                     │                   │
+               ▼                     ▼                   ▼
+┌──────────────────────────┐ ┌───────────────────┐ ┌────────────────────┐
+│   ML INFERENCE ENGINE    │ │  SQLAlchemy ORM   │ │  REPORT GENERATOR  │
+│   ml/predictor.py        │ │  database/models  │ │  reports/generator │
+│   • StandardScaler       │ │  • Patients Table │ │  • ReportLab PDF   │
+│   • Random Forest (Joblib)│ │  • Predictions    │ │  • HTML Clinical   │
+│   • Model Pipeline       │ │  • System Metrics │ │  • QR Verification │
+└──────────────────────────┘ └─────────┬─────────┘ └────────────────────┘
+                                       │
+                                       ▼
+                             ┌───────────────────┐
+                             │  SQLite Database  │
+                             │  medpredict.db    │
+                             └───────────────────┘
+```
+
+---
+
+## 🧠 Machine Learning Pipeline Workflow Diagram
+
+```text
+Synthetic Patient Cohort Dataset (10,500 Clinical Records)
+                          │
+                          ▼
+Feature Engineering & Normalization (14 Patient Vitals)
+[Age, Gender, Height, Weight, BMI, Sys BP, Dia BP, Glucose, Cholesterol, HR, etc.]
+                          │
+                          ▼
+Stratified Train / Test Partitioning (80% Train / 20% Holdout Test)
+                          │
+                          ▼
+Feature Scaling Pipeline (StandardScaler fit on Train Set)
+                          │
+                          ▼
+Multi-Model Training & Cross-Validation Benchmarking
+├── 🌲 Random Forest Classifier (Primary Ensemble ~88.5% Accuracy)
+├── 📈 Logistic Regression Classifier (~84.2% Accuracy)
+└── 🌳 Decision Tree Classifier (~79.5% Accuracy)
+                          │
+                          ▼
+Model Serialization (scaler.joblib, random_forest.joblib, metrics.json)
+                          │
+                          ▼
+Real-Time Flask REST API Inference Engine (< 20ms Latency)
+                          │
+                          ▼
+SQLAlchemy Audit Trail Logging & 6-Chart Analytics Dashboard
+```
+
+---
+
+## 📂 Project Folder Structure
+
+```text
+Smart-Health-Prediction-System/
+├── 📁 .github/
+│   └── 📁 workflows/
+│       └── ci.yml             # GitHub Actions Automated CI Build & Test Pipeline
+├── app.py                     # Flask REST API Application Router & Middleware
+├── config.py                  # Environment Configuration & Path Directory Manager
+├── Dockerfile                 # Multi-Stage Docker Container Build Specification
+├── docker-compose.yml         # Docker Container Orchestration Manifest
+├── .env.example               # Environment Variable Configuration Template
+├── .gitignore                 # Version Control File Exclusion Rules
+├── LICENSE                    # MIT License
+├── requirements.txt            # Python Package Dependencies Specification
+├── README.md                  # Project Documentation
+├── 📁 database/
+│   ├── db.py                  # Database Connection Manager & Automated Seeder (520+ Records)
+│   ├── models.py              # Patient, Prediction, ModelMetric, ReportLog ORM Schemas
+│   └── medpredict.db          # SQLite Database Storage Engine File
+├── 📁 datasets/
+│   ├── generate_dataset.py    # 10,500 Clinical Dataset Synthesis Script
+│   └── medpredict_10k.csv     # Training & Benchmark Clinical Dataset CSV
+├── 📁 demo/
+│   └── README.md              # Demonstration Video Guide & Assets
+├── 📁 ml/
+│   ├── trainer.py             # Model Training, Cross-Validation & Serialization Script
+│   └── predictor.py           # Real-Time Multi-Disease Risk Inference Engine
+├── 📁 reports/
+│   └── generator.py           # Printable PDF/HTML Clinical Report Exporter
+├── 📁 screenshots/
+│   ├── dashboard.png          # Home Overview Screenshot
+│   ├── prediction.png         # Prediction Studio Screenshot
+│   ├── history.png            # Patient History Screenshot
+│   ├── analytics.png          # Visual Analytics Screenshot
+│   ├── benchmarks.png         # ML Benchmarks Screenshot
+│   ├── status.png             # System Telemetry Screenshot
+│   └── report.png             # Clinical PDF Report Screenshot
+├── 📁 static/
+│   ├── 📁 css/
+│   │   └── style.css          # Enterprise SaaS Design System & Theme CSS
+│   └── 📁 js/
+│       ├── main.js            # Core UI Controller, Search & Theme Handler
+│       ├── toast.js           # Slide-In Toast Notification Controller
+│       ├── charts.js          # 6-Chart Visual Dashboard Controller
+│       └── admin.js           # History Table & Dynamic Metric Binding
+├── 📁 templates/
+│   └── index.html             # Consolidated Single-Page Application Dashboard HTML
+├── 📁 trained_models/
+│   ├── scaler.joblib          # Serialized StandardScaler Model Pipeline
+│   ├── random_forest.joblib   # Serialized Random Forest Classifier Weights
+│   └── metrics.json           # Serialized Model Metrics & Version Metadata
+└── 📁 tests/
+    └── test_app.py            # Automated Unittest Suite (12/12 Passed)
+```
+
+---
+
+## 🚀 Deployment Instructions
+
+### Local Development Setup
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/dvharshavardhan/Smart-Health-Prediction-System.git
+   cd Smart-Health-Prediction-System
+   ```
+
+2. **Create and Activate Virtual Environment**:
+   ```bash
+   python -m venv venv
+   # On Windows:
+   venv\Scripts\activate
+   # On macOS/Linux:
+   source venv/bin/activate
+   ```
+
+3. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Initialize Database & Train ML Models**:
+   ```bash
+   python ml/trainer.py
+   ```
+
+5. **Launch the Flask Server**:
+   ```bash
+   python app.py
+   ```
+
+6. **Access Dashboard**:
+   Open your browser at `http://127.0.0.1:5000`
+
+---
+
+### Docker Deployment
+
+Deploy containerized via Docker Compose:
+
+```bash
+docker compose up -d
+```
+
+Access the platform at `http://localhost:5000`.
+
+To build the Docker image manually:
+```bash
+docker build -t smart-health-prediction:latest .
+docker run -d -p 5000:5000 --name health_app smart-health-prediction:latest
+```
+
+---
+
+## ❓ Frequently Asked Technical Interview Q&A
+
+### Q1: Why did you choose Flask instead of Django or FastAPIs?
+> **Answer**: Flask was chosen for its lightweight, modular architecture and low overhead, which is ideal for deploying real-time Machine Learning REST APIs. It provides full freedom to configure SQLAlchemy ORM data layers, custom request-latency tracking middleware, and custom serialization pipelines without unnecessary framework bloat.
+
+### Q2: How did you select and validate your Random Forest Classifier model?
+> **Answer**: We benchmarked Random Forest against Logistic Regression and Decision Tree architectures on 10,500 clinical patient records. Random Forest achieved the highest Accuracy (88.5%) and F1 Score (88.0%) due to its ensemble decision boundary averaging, which handles non-linear interactions across physiological vitals (e.g., Systolic BP vs Glucose levels) without overfitting.
+
+### Q3: How do you guarantee sub-second SLA inference latency in production?
+> **Answer**: Pre-trained Scikit-Learn models and `StandardScaler` transformations are pre-loaded into memory at application startup using `joblib`. During request execution, feature vector evaluation requires < 20 ms. Request latency is tracked via Flask `@before_request` and `@after_request` hooks and recorded in system telemetry.
+
+### Q4: How is patient prediction history handled and queried efficiently?
+> **Answer**: Patient records and diagnostic results are stored in SQLite using SQLAlchemy ORM models with database indexing on `patient_code`, `risk_level`, and `created_at`. Paginated SQL queries prevent memory bloat, supporting multi-criteria search, sorting, and streaming CSV exports.
 
 ---
 
 ## 🧪 Testing
 
-The platform includes an automated unittest suite verifying REST API routes, SLA compliance boundaries (< 1000ms), database ORM persistence, and ML model inference consistency:
+Automated unittest suite validating REST API endpoints, database persistence, SLA compliance (< 1000ms), and ML prediction outcomes:
 
 ```bash
 python tests/test_app.py
@@ -286,98 +482,12 @@ python tests/test_app.py
 
 **Output**:
 ```text
-........
+............
 ----------------------------------------------------------------------
-Ran 8 tests in 0.534s
+Ran 12 tests in 0.362s
 
 OK (100% Pass Rate)
 ```
-
----
-
-## ⚡ Performance
-
-* **Average Inference Latency**: `14.2 ms` (Scikit-Learn Random Forest)
-* **API Response SLA**: `< 1,000 ms` Target (100% SLA Compliance Rate)
-* **Database Query Performance**: Indexed columns on `patient_code`, `risk_level`, and `created_at`
-* **Frontend Responsiveness**: CSS Grid / Flexbox layout with smooth transitions
-
----
-
-## 📄 Reports
-
-The platform features an automated clinical report generator producing diagnostic summaries:
-* **QR Code Verification**: Includes embedded `QR VERIFIED OFFICIAL` badge.
-* **Patient Vitals Matrix**: Clinical measurements mapped against normal reference ranges.
-* **ML Lineage Table**: Documents model version (`v2.0.1`), classifier type, train/test split, and inference SLA.
-* **Legal Disclaimer & Signature**: Includes physician signature lines and institutional disclaimers.
-
----
-
-## 📈 Analytics Dashboard
-
-The **Analytics & ML Studio** tab aggregates population health insights into 6 visual Chart.js dashboards:
-1. **5 Diseases Prevalence Donut Chart**: Proportional risk across Heart Disease, Diabetes, Kidney Disease, Stroke Risk, and Hypertension.
-2. **Risk Category Pie Chart**: High, Medium, and Low risk population distribution.
-3. **Monthly Evaluations Line Chart**: Longitudinal patient screening volume trends.
-4. **Demographics Bar Chart**: Age group and gender risk breakdown.
-5. **Execution Latency SLA Line Chart**: Real-time request response time vs 1,000ms SLA ceiling.
-6. **ML Classifier Comparison Bar Chart**: Side-by-side Accuracy, Precision, Recall, and F1 Score evaluation.
-
----
-
-## 🤖 Machine Learning Models
-
-Three supervised classification algorithms were trained and benchmarked on 10,500 patient records:
-
-| Model Architecture | Accuracy (%) | Precision (%) | Recall (%) | F1 Score (%) | Status |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Random Forest Classifier (Primary)** | **88.50%** | **87.90%** | **88.20%** | **88.05%** | **Primary Best** |
-| **Logistic Regression** | 84.20% | 83.50% | 84.10% | 83.80% | Operational |
-| **Decision Tree Classifier** | 79.50% | 79.10% | 79.40% | 79.25% | Operational |
-
----
-
-## 🗄️ Database Design
-
-The relational database is powered by **SQLite** and managed via **SQLAlchemy ORM**:
-
-* **`patients`**: Stores demographic attributes (`patient_code`, `name`, `age`, `gender`, `height_cm`, `weight_kg`, `bmi`).
-* **`predictions`**: Stores 14 clinical vitals, risk level, confidence percentage, JSON disease probabilities, JSON risk factors, recommendations, model used, and response latency.
-* **`model_metrics`**: Stores serialized benchmark metrics for classifier architectures.
-* **`reports`**: Stores audit logs for generated PDF and CSV diagnostic exports.
-* **`system_metrics`**: Stores per-request API latency measurements and SLA compliance indicators.
-
----
-
-## 🔮 Future Enhancements
-
-* [ ] Integration with HL7 FHIR standards for EHR interoperability.
-* [ ] Support for Deep Learning Neural Network models (PyTorch / TensorFlow).
-* [ ] Real-time WebSocket streaming for continuous ICU patient vital monitoring.
-* [ ] OAuth2 / OpenID Connect multi-tenant authentication for hospital networks.
-
----
-
-## 💼 Resume Highlights
-
-- Flask REST APIs
-- Machine Learning Integration
-- SQLAlchemy ORM
-- Docker
-- GitHub Actions
-- Interactive Dashboard
-- PDF Reports
-- Chart.js Analytics
-
----
-
-## 🗣️ Interview Talking Points
-
-* **Handling Multi-Disease Risk**: *"Rather than predicting a single binary condition, the platform maps 14 normalized clinical vitals across 5 distinct disease probability distributions using standardized feature scaling."*
-* **Low-Latency Inference**: *"Inference execution latency is tracked via Flask request middleware and logged into a telemetry table, verifying that predictions fulfill the sub-1-second SLA target."*
-* **SQLAlchemy ORM & Database Seeding**: *"The database schema maintains clear relational separation between patient profiles, prediction logs, model metrics, report audit trails, and system telemetry, pre-seeded with 520+ realistic historical records."*
-* **Dynamic Pipeline Metadata**: *"Dataset versioning, model versioning (v2.0.1), training duration, and timestamps are dynamically bound from `metrics.json` directly to the REST API and dashboard UI."*
 
 ---
 
@@ -392,3 +502,4 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 **Harsha Vardhan**
 * **GitHub**: [https://github.com/dvharshavardhan](https://github.com/dvharshavardhan)
 * **LinkedIn**: [https://linkedin.com/in/dvharshavardhan](https://linkedin.com/in/dvharshavardhan)
+
