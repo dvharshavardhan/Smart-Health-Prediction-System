@@ -88,8 +88,8 @@ function renderAdminTable(records) {
             <td><span class="latency-tag">${r.latency_ms} ms</span></td>
             <td>
                 <div style="display: flex; gap: 8px;">
-                    <button class="preset-btn" style="padding: 4px 10px; font-size: 11px;" onclick="window.open('/api/reports/export/${r.id}', '_blank')"><i class="fa-solid fa-file-pdf"></i> Report</button>
-                    <button class="preset-btn" style="padding: 4px 10px; font-size: 11px; background: var(--rose-bg); color: var(--rose-accent); border-color: var(--rose-border);" onclick="deleteRecord(${r.id})"><i class="fa-solid fa-trash"></i> Delete</button>
+                    <a href="/api/reports/export/${r.id}" target="_blank" title="Download Clinical Report" class="preset-btn" style="padding: 4px 10px; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"><i class="fa-solid fa-file-pdf"></i> Report</a>
+                    <button class="preset-btn" style="padding: 4px 10px; font-size: 11px; background: var(--rose-bg); color: var(--rose-accent); border-color: var(--rose-border);" onclick="deleteRecord(${r.id})" title="Delete Record"><i class="fa-solid fa-trash"></i> Delete</button>
                 </div>
             </td>
         `;
@@ -147,7 +147,7 @@ async function loadReportsData() {
         const data = await res.json();
         if (data.success) {
             const kpiElem = document.getElementById('kpiTotalReports');
-            if (kpiElem) kpiElem.innerText = data.total_reports || 130;
+            if (kpiElem) kpiElem.innerText = data.total_reports ?? 0;
         }
     } catch (e) {
         console.log("Reports data load ready.");
@@ -207,10 +207,28 @@ async function loadSystemStatus() {
         
         if (data.success) {
             const status = data.status;
-            document.getElementById('sysDbStatus').innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--emerald-accent);"></i> ${status.database}`;
-            document.getElementById('sysModelStatus').innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--emerald-accent);"></i> ${status.models}`;
-            document.getElementById('sysApiStatus').innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--emerald-accent);"></i> ${status.api}`;
-            document.getElementById('sysSpeed').innerHTML = `<i class="fa-solid fa-bolt" style="color: var(--brand-blue);"></i> ${status.avg_speed_ms} ms`;
+            
+            // Status Tab Elements
+            const sysDb = document.getElementById('sysDbStatus');
+            const sysModel = document.getElementById('sysModelStatus');
+            const sysApi = document.getElementById('sysApiStatus');
+            const sysSpeed = document.getElementById('sysSpeed');
+
+            if (sysDb) sysDb.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--emerald-accent);"></i> ${status.database}`;
+            if (sysModel) sysModel.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--emerald-accent);"></i> ${status.models}`;
+            if (sysApi) sysApi.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--emerald-accent);"></i> ${status.api}`;
+            if (sysSpeed) sysSpeed.innerHTML = `<i class="fa-solid fa-bolt" style="color: var(--brand-blue);"></i> ~${status.avg_speed_ms} ms`;
+
+            // Home Dashboard Telemetry KPI Card Elements
+            const homeDb = document.getElementById('homeSysDb');
+            const homeApi = document.getElementById('homeSysApi');
+            const homeModel = document.getElementById('homeSysModel');
+            const homeSpeed = document.getElementById('homeSysSpeed');
+
+            if (homeDb) homeDb.innerHTML = `<i class="fa-solid fa-database"></i> ${status.database}`;
+            if (homeApi) homeApi.innerHTML = `<i class="fa-solid fa-heart-circle-check"></i> ${status.api}`;
+            if (homeModel) homeModel.innerHTML = `<i class="fa-solid fa-brain"></i> ${status.models}`;
+            if (homeSpeed) homeSpeed.innerHTML = `<i class="fa-solid fa-bolt"></i> ~${status.avg_speed_ms} ms`;
         }
     } catch (e) {
         console.log("Telemetry check ready.");
@@ -241,21 +259,27 @@ function renderMetricsTable(metrics) {
     
     tbody.innerHTML = '';
     
-    const rf = metrics.random_forest || { accuracy: 88.5, precision: 87.9, recall: 88.2, f1_score: 88.05 };
+    const rf = metrics.random_forest || { accuracy: 88.5, precision: 87.9, recall: 88.2, f1_score: 88.0 };
     const lr = metrics.logistic_regression || { accuracy: 84.2, precision: 83.5, recall: 84.1, f1_score: 83.8 };
-    const dt = metrics.decision_tree || { accuracy: 79.5, precision: 79.1, recall: 79.4, f1_score: 79.25 };
+    const dt = metrics.decision_tree || { accuracy: 79.5, precision: 79.1, recall: 79.4, f1_score: 79.2 };
     
+    const formatVal = (v) => typeof v === 'number' ? v.toFixed(1) : v;
+
     const rows = [
-        { name: 'Random Forest Classifier (Ensemble)', acc: rf.accuracy, prec: rf.precision, rec: rf.recall, f1: rf.f1_score, best: true },
-        { name: 'Logistic Regression', acc: lr.accuracy, prec: lr.precision, rec: lr.recall, f1: lr.f1_score, best: false },
-        { name: 'Decision Tree Classifier', acc: dt.accuracy, prec: dt.precision, rec: dt.recall, f1: dt.f1_score, best: false }
+        { name: 'Random Forest Classifier (Ensemble)', acc: formatVal(rf.accuracy), prec: formatVal(rf.precision), rec: formatVal(rf.recall), f1: formatVal(rf.f1_score), best: true },
+        { name: 'Logistic Regression', acc: formatVal(lr.accuracy), prec: formatVal(lr.precision), rec: formatVal(lr.recall), f1: formatVal(lr.f1_score), best: false },
+        { name: 'Decision Tree Classifier', acc: formatVal(dt.accuracy), prec: formatVal(dt.precision), rec: formatVal(dt.recall), f1: formatVal(dt.f1_score), best: false }
     ];
     
     rows.forEach(row => {
         const tr = document.createElement('tr');
+        if (row.best) {
+            tr.style.background = 'var(--emerald-bg)';
+            tr.style.borderLeft = '3px solid var(--emerald-accent)';
+        }
         tr.innerHTML = `
             <td style="font-weight: ${row.best ? '700' : '600'}; color: ${row.best ? 'var(--brand-blue)' : 'var(--text-heading)'};">${row.name}</td>
-            <td><strong>${row.acc}%</strong></td>
+            <td style="font-weight: ${row.best ? '700' : '600'}; color: ${row.best ? 'var(--emerald-accent)' : 'var(--text-heading)'};">${row.acc}%</td>
             <td>${row.prec}%</td>
             <td>${row.rec}%</td>
             <td>${row.f1}%</td>

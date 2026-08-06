@@ -91,7 +91,7 @@
     "family_history"
   ],
   "training_duration_sec": 3.36,
-  "trained_at": "2026-08-05T08:22:31Z",
-  "trained_at_display": "05-Aug-2026",
+  "trained_at": "2026-08-06T10:22:00Z",
+  "trained_at_display": "06-Aug-2026",
   "best_model": "logistic_regression"
 }

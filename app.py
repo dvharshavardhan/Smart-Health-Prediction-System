@@ -59,6 +59,11 @@ def start_timer():
 
 @app.after_request
 def log_latency(response: Response) -> Response:
+    # Security Response Headers
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+
     if hasattr(request, 'start_time') and request.endpoint and request.endpoint.startswith('api_'):
         latency_ms = round((time.time() - request.start_time) * 1000, 2)
         meets_sla = 1 if latency_ms < Config.SLA_LATENCY_MAX_MS else 0
@@ -81,12 +86,56 @@ def log_latency(response: Response) -> Response:
 def index():
     return render_template('index.html')
 
+def validate_prediction_input(data: dict):
+    """
+    Validates input payload fields against clinical reference bounds.
+    Returns (is_valid, error_message).
+    """
+    if not isinstance(data, dict):
+        return False, "Payload must be a valid JSON object."
+
+    validations = [
+        ('age', 1.0, 120.0, "Age must be between 1 and 120 years."),
+        ('height_cm', 50.0, 250.0, "Height must be between 50 and 250 cm."),
+        ('weight_kg', 20.0, 300.0, "Weight must be between 20 and 300 kg."),
+        ('systolic_bp', 70.0, 250.0, "Systolic BP must be between 70 and 250 mmHg."),
+        ('diastolic_bp', 40.0, 150.0, "Diastolic BP must be between 40 and 150 mmHg."),
+        ('glucose', 40.0, 500.0, "Fasting Glucose must be between 40 and 500 mg/dL."),
+        ('cholesterol', 80.0, 600.0, "Serum Cholesterol must be between 80 and 600 mg/dL."),
+        ('heart_rate', 30.0, 220.0, "Resting Heart Rate must be between 30 and 220 bpm.")
+    ]
+
+    for field, min_val, max_val, err_msg in validations:
+        if field in data and data[field] is not None:
+            try:
+                val = float(data[field])
+                if val < min_val or val > max_val:
+                    return False, err_msg
+            except (ValueError, TypeError):
+                return False, f"Invalid numeric value provided for {field}."
+
+    # Validate Systolic BP vs Diastolic BP
+    try:
+        sys_bp = float(data.get('systolic_bp', 120))
+        dia_bp = float(data.get('diastolic_bp', 80))
+        if sys_bp <= dia_bp:
+            return False, "Systolic BP must be greater than Diastolic BP."
+    except (ValueError, TypeError):
+        return False, "Blood pressure values must be valid numbers."
+
+    return True, None
+
 # 1. Real-Time Patient Risk Prediction API Endpoint
 @app.route('/api/predict', methods=['POST'])
 def api_predict():
     start_time = time.time()
+    data = request.json or {}
+    
+    is_valid, err_msg = validate_prediction_input(data)
+    if not is_valid:
+        return jsonify({'success': False, 'error': err_msg}), 400
+
     try:
-        data = request.json or {}
         model_name = data.get('model_name', 'random_forest')
         
         # Execute Sub-Second ML Risk Assessment
@@ -172,16 +221,26 @@ def api_get_patients():
     query = Prediction.query
     
     if search:
+        search_term = f"%{search.lower()}%"
         query = query.filter(
-            (Prediction.patient_code.like(f'%{search}%')) | 
-            (Prediction.patient_name.like(f'%{search}%'))
+            (db.func.lower(Prediction.patient_code).like(search_term)) | 
+            (db.func.lower(Prediction.patient_name).like(search_term))
         )
         
     if risk_filter and risk_filter != 'All':
         query = query.filter(Prediction.risk_level == risk_filter)
         
-    # Apply Dynamic Column Sorting
-    sort_col = getattr(Prediction, sort_by, Prediction.created_at)
+    # Apply Dynamic Column Sorting with explicit allowlist dictionary
+    ALLOWED_SORT_COLUMNS = {
+        "created_at": Prediction.created_at,
+        "patient_code": Prediction.patient_code,
+        "patient_name": Prediction.patient_name,
+        "age": Prediction.age,
+        "bmi": Prediction.bmi,
+        "risk_level": Prediction.risk_level,
+        "latency_ms": Prediction.latency_ms,
+    }
+    sort_col = ALLOWED_SORT_COLUMNS.get(sort_by, Prediction.created_at)
     if order.lower() == 'asc':
         query = query.order_by(sort_col.asc())
     else:
@@ -262,7 +321,7 @@ def api_get_reports():
     
     return jsonify({
         'success': True,
-        'total_reports': total_reports if total_reports > 0 else 130,
+        'total_reports': total_reports,
         'reports': recent_reports
     })
 
@@ -303,7 +362,7 @@ def api_get_analytics():
         sla_compliant = sum(1 for m in metrics if m.meets_sla == 1)
         sla_compliance_pct = round((sla_compliant / len(metrics)) * 100, 1)
     else:
-        avg_latency = 14.2
+        avg_latency = 0.0
         sla_compliance_pct = 100.0
         
     return jsonify({
@@ -322,18 +381,18 @@ def api_get_analytics():
         'last_trained': meta.get('trained_at_display', datetime.utcnow().strftime('%d-%b-%Y')),
         'trained_at_iso': meta.get('trained_at', datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')),
         'risk_breakdown': {
-            'Low': risk_low if total_predictions > 0 else 260,
-            'Medium': risk_med if total_predictions > 0 else 180,
-            'High': risk_high if total_predictions > 0 else 80
+            'Low': risk_low,
+            'Medium': risk_med,
+            'High': risk_high
         },
         'avg_latency_ms': avg_latency,
         'sla_compliance_percent': sla_compliance_pct,
         'disease_prevalence': {
-            'heart_disease': heart_cnt if heart_cnt > 0 else 142,
-            'diabetes': diabetes_cnt if diabetes_cnt > 0 else 128,
-            'kidney_disease': kidney_cnt if kidney_cnt > 0 else 84,
-            'stroke_risk': stroke_cnt if stroke_cnt > 0 else 96,
-            'hypertension': hypertension_cnt if hypertension_cnt > 0 else 210
+            'heart_disease': heart_cnt,
+            'diabetes': diabetes_cnt,
+            'kidney_disease': kidney_cnt,
+            'stroke_risk': stroke_cnt,
+            'hypertension': hypertension_cnt
         }
     })
 
@@ -423,3 +482,4 @@ def api_health():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
+

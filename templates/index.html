@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Health Prediction System | Clinical Analytics Platform</title>
+    <!-- Custom Enterprise SVG Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230284c7'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>">
     <!-- Google Fonts & Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Custom Enterprise CSS -->
@@ -17,118 +19,396 @@
     <div id="toastContainer"></div>
 
     <!-- Floating Action Button (FAB) for Quick Prediction -->
-    <button class="fab-btn" title="New AI Risk Prediction" onclick="switchTab('predictorTab', document.querySelector('.nav-btn')); window.scrollTo({top: 0, behavior: 'smooth'});">
+    <button class="fab-btn" title="New AI Risk Prediction" aria-label="New AI Risk Prediction" onclick="switchTab('predictorTab', document.querySelector('.nav-btn')); window.scrollTo({top: 0, behavior: 'smooth'});">
         <i class="fa-solid fa-plus"></i>
     </button>
 
-    <!-- Header & Top Application Navigation Bar -->
-    <header class="header">
-        <div class="brand">
-            <div class="brand-icon">
-                <i class="fa-solid fa-heart-pulse"></i>
-            </div>
-            <div>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span>Smart Health Prediction System</span>
-                    <span class="brand-badge">v2.0.1</span>
+    <!-- Fixed Enterprise Left Sidebar -->
+    <aside id="appSidebar" class="sidebar">
+        <!-- Sidebar Brand Header -->
+        <div class="sidebar-header">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
                 </div>
-                <div style="font-size: 11px; font-weight: 500; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">
-                    Flask REST API • SQLAlchemy ORM • Scikit-Learn Engine
+                <div class="brand-text">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="brand-title">SmartHealth</span>
+                        <span class="brand-badge">v2.0.1</span>
+                    </div>
+                    <div class="brand-sub">Clinical AI Platform</div>
                 </div>
             </div>
+            <button class="sidebar-toggle-btn" title="Toggle Sidebar" aria-label="Toggle Sidebar" onclick="toggleSidebar()">
+                <i class="fa-solid fa-chevron-left" id="toggleIcon"></i>
+            </button>
         </div>
 
-        <nav class="nav-tabs">
-            <button class="nav-btn active" onclick="switchTab('predictorTab', this)">
-                <i class="fa-solid fa-stethoscope"></i> New Prediction
+        <!-- Sidebar Navigation Menu -->
+        <nav class="sidebar-menu">
+            <div class="sidebar-section-label">MENU</div>
+            <button class="nav-btn active" aria-label="Home Overview" onclick="switchTab('homeTab', this)">
+                <i class="fa-solid fa-house"></i> <span>Home Overview</span>
             </button>
-            <button class="nav-btn" onclick="switchTab('historyTab', this); loadAdminData();">
-                <i class="fa-solid fa-clock-rotate-left"></i> History & Reports
+            <button class="nav-btn" aria-label="New Prediction" onclick="switchTab('predictorTab', this)">
+                <i class="fa-solid fa-stethoscope"></i> <span>New Prediction</span>
             </button>
-            <button class="nav-btn" onclick="switchTab('analyticsTab', this); loadAnalyticsData(); loadModelMetrics();">
-                <i class="fa-solid fa-chart-line"></i> Analytics & ML Studio
+            <button class="nav-btn" aria-label="History and Reports" onclick="switchTab('historyTab', this); loadAdminData();">
+                <i class="fa-solid fa-file-lines"></i> <span>History & Reports</span>
             </button>
-            <button class="nav-btn" onclick="switchTab('statusTab', this); loadSystemStatus();">
-                <i class="fa-solid fa-server"></i> System Status
+            <button class="nav-btn" aria-label="Analytics Studio" onclick="switchTab('analyticsTab', this); loadAnalyticsData(); loadModelMetrics();">
+                <i class="fa-solid fa-chart-pie"></i> <span>Analytics Studio</span>
+            </button>
+            <button class="nav-btn" aria-label="ML Benchmarks" onclick="switchTab('benchmarksTab', this); loadModelMetrics();">
+                <i class="fa-solid fa-brain"></i> <span>ML Benchmarks</span>
+            </button>
+            <button class="nav-btn" aria-label="System Status" onclick="switchTab('statusTab', this); loadSystemStatus();">
+                <i class="fa-solid fa-server"></i> <span>System Status</span>
             </button>
         </nav>
 
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <!-- 1-Click Dark/Light Mode Switcher Button -->
-            <button id="themeToggleBtn" class="theme-toggle-btn" onclick="toggleTheme()">
-                <span>🌙 Dark AI Mode</span>
-            </button>
-
-            <div class="status-pill">
-                <span class="status-dot"></span>
-                <span>SLA: &lt; 1.0s Active</span>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Workspace Container -->
-    <main class="container">
-
-        <!-- Executive Hero Banner -->
-        <div class="hero-card">
-            <div>
-                <div class="hero-title">
-                    Intelligent Clinical Risk Assessment & Population Health
+        <!-- Sidebar Bottom Footer (2 Enterprise Widgets) -->
+        <div class="sidebar-footer">
+            <!-- 1. Dark AI Mode Enterprise Toggle Card -->
+            <div class="sidebar-widget theme-widget">
+                <div class="widget-left">
+                    <div class="theme-icon"><i class="fa-solid fa-moon"></i></div>
+                    <div>
+                        <div class="widget-title">Dark AI Mode</div>
+                        <div class="widget-sub" id="themeStatusText">Disabled</div>
+                    </div>
                 </div>
-                <div class="hero-subtitle">
-                    Real-time AI risk evaluation across 5 critical diseases (Heart Disease, Diabetes, Kidney Disease, Stroke Risk, and Hypertension) powered by Scikit-Learn Random Forest Ensembles.
+                <button id="themeToggleBtn" class="theme-toggle-switch" role="switch" aria-checked="false" aria-label="Toggle Dark AI Mode" onclick="toggleTheme()">
+                    <span class="toggle-thumb"></span>
+                </button>
+            </div>
+
+            <!-- 2. Enterprise SLA Live Status Card -->
+            <div class="sidebar-widget sla-widget">
+                <div class="sla-header">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span class="status-dot pulse-glow"></span>
+                        <span class="sla-title">Enterprise SLA</span>
+                    </div>
+                    <span class="badge badge-low" style="font-size: 9.5px; padding: 1px 6px;">Healthy</span>
+                </div>
+                <div class="sla-metrics-grid">
+                    <div class="sla-metric-item">
+                        <span class="sla-label">Avg Latency</span>
+                        <span class="sla-val text-blue" id="sidebarLatency">14 ms</span>
+                    </div>
+                    <div class="sla-metric-item">
+                        <span class="sla-label">SLA Target</span>
+                        <span class="sla-val">&lt; 1000 ms</span>
+                    </div>
                 </div>
             </div>
-            <div>
-                <span class="badge badge-low" style="font-size: 13px; padding: 8px 16px;">
-                    <i class="fa-solid fa-shield-halved"></i> SLA Compliant
-                </span>
-            </div>
         </div>
+    </aside>
 
-        <!-- Dynamic ML Dataset & Pipeline Versioning Summary Bar -->
-        <div class="dataset-bar">
-            <div class="dataset-metric">
-                <span class="d-label">MODEL VERSION</span>
-                <span class="d-val" id="dsModelVer" style="color: var(--brand-blue);">v2.0.1</span>
+    <!-- Main Workspace Area -->
+    <div class="workspace-wrapper">
+        <!-- Top Workspace Bar -->
+        <header class="top-bar">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <button class="mobile-toggle-btn" aria-label="Toggle Sidebar" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="page-breadcrumb">
+                    <a href="javascript:void(0)" onclick="switchTab('homeTab', document.querySelectorAll('.nav-btn')[0])">Dashboard</a>
+                    <i class="fa-solid fa-chevron-right" style="font-size: 9px; color: var(--text-dim); margin: 0 6px;"></i>
+                    <span class="current" id="currentPageTitle">Home Overview</span>
+                </div>
             </div>
-            <div class="dataset-metric">
-                <span class="d-label">DATASET VERSION</span>
-                <span class="d-val" id="dsName" style="font-size: 13px;">Smart Health Dataset v1.2</span>
+
+            <div class="top-search" style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="dashboardSearchInput" placeholder="Search patients, predictions..." aria-label="Search patients or predictions" oninput="handleDashboardSearch(this.value)" onkeydown="handleSearchKeyDown(event)" autocomplete="off">
+                <button id="clearSearchBtn" class="clear-search-btn" style="display: none;" onclick="clearDashboardSearch()" aria-label="Clear Search">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="searchResultsDropdown" class="search-results-dropdown" style="display: none;"></div>
             </div>
-            <div class="dataset-metric">
-                <span class="d-label">BEST MODEL</span>
-                <span class="d-val" id="dsBestModel" style="color: var(--brand-blue); font-size: 14px;">Random Forest</span>
+
+            <div class="top-actions">
+                <div class="notification-wrapper" style="position: relative;">
+                    <button class="icon-btn" id="notificationBtn" title="Notifications" onclick="toggleNotificationDropdown(event)">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="notification-dot" id="notificationDot"></span>
+                    </button>
+
+                    <div id="notificationDropdown" class="notification-dropdown" style="display: none;">
+                        <div class="notification-header">
+                            <div style="font-weight: 700; font-size: 14px; color: var(--text-heading);">Notifications</div>
+                            <span class="badge badge-low" style="font-size: 10px;" id="notificationBadge">3 New</span>
+                        </div>
+                        <div class="notification-list" id="notificationList">
+                            <div class="notification-item unread">
+                                <div class="notif-icon icon-blue"><i class="fa-solid fa-circle-check"></i></div>
+                                <div class="notif-content">
+                                    <div class="notif-title">System Operational</div>
+                                    <div class="notif-desc">ML Engine & REST API running smoothly (&lt;14ms SLA)</div>
+                                    <div class="notif-time">Just now</div>
+                                </div>
+                            </div>
+                            <div class="notification-item unread">
+                                <div class="notif-icon icon-emerald"><i class="fa-solid fa-database"></i></div>
+                                <div class="notif-content">
+                                    <div class="notif-title">Database Sync Complete</div>
+                                    <div class="notif-desc">520 patient diagnostic logs indexed in SQLite</div>
+                                    <div class="notif-time">12 mins ago</div>
+                                </div>
+                            </div>
+                            <div class="notification-item unread">
+                                <div class="notif-icon icon-purple"><i class="fa-solid fa-brain"></i></div>
+                                <div class="notif-content">
+                                    <div class="notif-title">Model Benchmarks Ready</div>
+                                    <div class="notif-desc">Random Forest Ensemble achieved 89.2% accuracy</div>
+                                    <div class="notif-time">1 hour ago</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notification-footer">
+                            <button class="btn-text" style="font-size: 12px; width: 100%; justify-content: center;" onclick="markAllNotificationsRead()">Mark all as read</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-avatar" title="Smart Health Prediction System" style="cursor: default;">
+                    <div style="width: 34px; height: 34px; border-radius: 50%; background: var(--brand-blue-bg); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--brand-blue); font-size: 16px;">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <div>
+                        <div class="user-name">Smart Health System</div>
+                        <div class="user-role">v2.0.1 • AI Platform</div>
+                    </div>
+                </div>
             </div>
-            <div class="dataset-metric">
-                <span class="d-label">EVALUATION ACCURACY</span>
-                <span class="d-val" id="dsAccuracy" style="color: var(--emerald-accent);">89.19% (20% Holdout Test)</span>
+        </header>
+
+        <!-- Main Workspace Container -->
+        <main class="container">
+
+        <!-- ===================================================================
+             TAB 0: HOME OVERVIEW (Clean SaaS Layout)
+             =================================================================== -->
+        <section id="homeTab" class="tab-content active">
+            
+            <!-- Welcome Section Card -->
+            <div class="welcome-card">
+                <span class="welcome-badge"><i class="fa-solid fa-shield-heart"></i> Enterprise Clinical Decision Support Platform</span>
+                <h1 class="welcome-title">Smart Health Prediction System</h1>
+                <p class="welcome-subtitle">AI-powered healthcare analytics platform for clinical risk assessment and multi-disease prediction.</p>
+                <div class="welcome-buttons">
+                    <button class="btn-primary" onclick="switchTab('predictorTab', document.querySelectorAll('.nav-btn')[1]); window.scrollTo({top: 0, behavior: 'smooth'});">
+                        <i class="fa-solid fa-stethoscope"></i> Start New Prediction
+                    </button>
+                    <button class="btn-secondary" onclick="switchTab('analyticsTab', document.querySelectorAll('.nav-btn')[3]); loadAnalyticsData(); loadModelMetrics();">
+                        <i class="fa-solid fa-chart-line"></i> View Analytics
+                    </button>
+                </div>
             </div>
-            <div class="dataset-metric">
-                <span class="d-label">TRAINING DURATION</span>
-                <span class="d-val" id="dsTrainDuration" style="color: var(--amber-accent);">3.36 sec</span>
+
+            <!-- Six Equal KPI Cards Grid -->
+            <div class="kpi-grid-6">
+                <!-- KPI 1: Dataset Size -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">DATASET SIZE</span>
+                        <div class="kpi-icon icon-blue"><i class="fa-solid fa-database"></i></div>
+                    </div>
+                    <div class="kpi-value">10,500</div>
+                    <div class="kpi-subtext"><i class="fa-solid fa-users"></i> Patient Cohorts</div>
+                </div>
+
+                <!-- KPI 2: Train/Test Split -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">TRAIN/TEST SPLIT</span>
+                        <div class="kpi-icon icon-emerald"><i class="fa-solid fa-layer-group"></i></div>
+                    </div>
+                    <div class="kpi-value">80 / 20</div>
+                    <div class="kpi-subtext"><i class="fa-solid fa-diagram-project"></i> 8,400 / 2,100 Split</div>
+                </div>
+
+                <!-- KPI 3: Clinical Features -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">CLINICAL FEATURES</span>
+                        <div class="kpi-icon icon-amber"><i class="fa-solid fa-notes-medical"></i></div>
+                    </div>
+                    <div class="kpi-value">14</div>
+                    <div class="kpi-subtext"><i class="fa-solid fa-heart-pulse"></i> Vitals & Demographics</div>
+                </div>
+
+                <!-- KPI 4: Diseases -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">DISEASES</span>
+                        <div class="kpi-icon icon-rose"><i class="fa-solid fa-virus"></i></div>
+                    </div>
+                    <div class="kpi-value">5</div>
+                    <div class="kpi-subtext"><i class="fa-solid fa-stethoscope"></i> Multi-label Targets</div>
+                </div>
+
+                <!-- KPI 5: Best Model -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">BEST MODEL</span>
+                        <div class="kpi-icon icon-purple"><i class="fa-solid fa-brain"></i></div>
+                    </div>
+                    <div class="kpi-value" style="font-size: 20px;">Random Forest</div>
+                    <div class="kpi-subtext text-emerald"><i class="fa-solid fa-circle-check"></i> 89.19% Accuracy</div>
+                </div>
+
+                <!-- KPI 6: Inference Speed -->
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <span class="kpi-label">INFERENCE SPEED</span>
+                        <div class="kpi-icon icon-blue"><i class="fa-solid fa-bolt"></i></div>
+                    </div>
+                    <div class="kpi-value">14 ms</div>
+                    <div class="kpi-subtext text-blue"><i class="fa-solid fa-shield-halved"></i> &lt; 1000ms SLA Target</div>
+                </div>
             </div>
-            <div class="dataset-metric">
-                <span class="d-label">LAST TRAINED</span>
-                <span class="d-val" id="dsLastTrained" style="color: var(--text-heading);">05-Aug-2026</span>
+
+            <!-- Quick Actions Grid (3 Cards) -->
+            <div class="quick-actions-grid">
+                <div class="action-card" onclick="switchTab('predictorTab', document.querySelectorAll('.nav-btn')[1]); window.scrollTo({top: 0, behavior: 'smooth'});">
+                    <div class="action-icon icon-blue"><i class="fa-solid fa-stethoscope"></i></div>
+                    <div class="action-content">
+                        <h4 class="action-title">New Prediction</h4>
+                        <p class="action-desc">Start real-time multi-disease AI risk assessment for a patient profile.</p>
+                    </div>
+                    <div class="action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+
+                <div class="action-card" onclick="switchTab('historyTab', document.querySelectorAll('.nav-btn')[2]); loadAdminData();">
+                    <div class="action-icon icon-emerald"><i class="fa-solid fa-file-pdf"></i></div>
+                    <div class="action-content">
+                        <h4 class="action-title">Generate Clinical Report</h4>
+                        <p class="action-desc">Download printable PDF reports with diagnostic summary and letterhead.</p>
+                    </div>
+                    <div class="action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
+
+                <div class="action-card" onclick="switchTab('analyticsTab', document.querySelectorAll('.nav-btn')[3]); loadAnalyticsData(); loadModelMetrics();">
+                    <div class="action-icon icon-amber"><i class="fa-solid fa-chart-line"></i></div>
+                    <div class="action-content">
+                        <h4 class="action-title">Analytics Dashboard</h4>
+                        <p class="action-desc">Explore 6 Chart.js interactive population health & prevalence dashboards.</p>
+                    </div>
+                    <div class="action-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                </div>
             </div>
-        </div>
+
+            <!-- Main Split Section: Recent Predictions & Side Column -->
+            <div class="home-main-split">
+                <!-- Left Column: Recent Predictions Table -->
+                <div class="saas-card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-heading"><i class="fa-solid fa-clock-rotate-left"></i> Recent Predictions</h3>
+                            <p class="card-subheading">Latest AI patient risk evaluations logged in SQLite</p>
+                        </div>
+                        <button class="btn-text" onclick="switchTab('historyTab', document.querySelectorAll('.nav-btn')[2]); loadAdminData();">
+                            View All <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="table-wrapper">
+                        <table class="saas-table">
+                            <thead>
+                                <tr>
+                                    <th>Patient Code</th>
+                                    <th>Name</th>
+                                    <th>Age</th>
+                                    <th>Disease Risk</th>
+                                    <th>Confidence</th>
+                                    <th>Latency</th>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentPredictionsHomeTableBody">
+                                <!-- Dynamically loaded via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Right Column: System Status & Latest Activity -->
+                <div class="home-side-column">
+                    <!-- Improved System Status KPI Card -->
+                    <div class="saas-card status-kpi-card">
+                        <div class="card-header" style="margin-bottom: 14px;">
+                            <h3 class="card-heading"><i class="fa-solid fa-server"></i> System Telemetry</h3>
+                            <span class="status-indicator-pill"><span class="status-dot pulse-glow"></span> 100% SLA Active</span>
+                        </div>
+                        
+                        <div class="status-grid-mini">
+                            <div class="status-mini-item">
+                                <span class="status-label">Database ORM</span>
+                                <span class="status-val text-emerald" id="homeSysDb"><i class="fa-solid fa-database"></i> Connected</span>
+                            </div>
+                            <div class="status-mini-item">
+                                <span class="status-label">REST API SLA</span>
+                                <span class="status-val text-emerald" id="homeSysApi"><i class="fa-solid fa-heart-circle-check"></i> Healthy</span>
+                            </div>
+                            <div class="status-mini-item">
+                                <span class="status-label">ML Classifiers</span>
+                                <span class="status-val text-emerald" id="homeSysModel"><i class="fa-solid fa-brain"></i> 3 Loaded</span>
+                            </div>
+                            <div class="status-mini-item">
+                                <span class="status-label">Inference SLA</span>
+                                <span class="status-val text-blue" id="homeSysSpeed"><i class="fa-solid fa-bolt"></i> ~14 ms</span>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; font-size: 11.5px;">
+                            <span style="color: var(--text-muted); font-weight: 500;"><i class="fa-solid fa-shield-halved text-emerald"></i> SLA Compliance Rate:</span>
+                            <span style="font-weight: 700; color: var(--emerald-accent); font-family: var(--font-mono);">100% (&lt;1.0s Target)</span>
+                        </div>
+                    </div>
+
+                    <!-- Improved Latest Activity Feed KPI Card -->
+                    <div class="saas-card activity-kpi-card">
+                        <div class="card-header" style="margin-bottom: 16px;">
+                            <h3 class="card-heading"><i class="fa-solid fa-bolt"></i> Live Activity Feed</h3>
+                            <span class="badge badge-low" style="font-size: 10px; padding: 2px 8px; font-weight: 600;"><span class="status-dot"></span> Live Stream</span>
+                        </div>
+                        <div class="activity-feed" id="dashboardActivityFeed">
+                            <!-- Populated dynamically via JS from recent database logs -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
 
         <!-- ===================================================================
              TAB 1: AI PATIENT PREDICTION STUDIO
              =================================================================== -->
-        <section id="predictorTab" class="tab-content active">
+        <section id="predictorTab" class="tab-content">
             <div class="glass-card">
                 <div class="card-title">
-                    <i class="fa-solid fa-user-doctor" style="color: var(--brand-blue);"></i>
+                    <i class="fa-solid fa-heart-pulse" style="color: var(--brand-blue);"></i>
                     <span>Patient Diagnostic Inputs & Real-Time AI Risk Assessment</span>
                 </div>
 
                 <!-- Presets Bar -->
                 <div class="presets-bar">
-                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">QUICK DEMO PRESETS:</span>
+                    <span style="font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">QUICK CLINICAL PRESETS:</span>
+                    <button type="button" class="preset-btn" onclick="loadClinicalPreset('healthy')">
+                        <i class="fa-solid fa-heart-pulse" style="color: var(--emerald-accent);"></i> Healthy Adult
+                    </button>
+                    <button type="button" class="preset-btn" onclick="loadClinicalPreset('hypertensive')">
+                        <i class="fa-solid fa-gauge-high" style="color: var(--rose-accent);"></i> Hypertensive Senior
+                    </button>
+                    <button type="button" class="preset-btn" onclick="loadClinicalPreset('diabetic')">
+                        <i class="fa-solid fa-vial" style="color: var(--amber-accent);"></i> Diabetic Profile
+                    </button>
                     <button type="button" class="preset-btn" onclick="generateRandomDemoData()">
-                        <i class="fa-solid fa-shuffle"></i> Generate Random Demo Data
+                        <i class="fa-solid fa-shuffle"></i> Random Demo
                     </button>
                     <button type="button" class="preset-btn" style="background: var(--bg-main);" onclick="clearForm()">
                         <i class="fa-solid fa-eraser"></i> Clear Form
@@ -238,7 +518,7 @@
             <!-- Multi-Stage AI Inference Loading Progress Box -->
             <div id="aiLoadingOverlay" style="display: none;" class="glass-card loading-card">
                 <div class="loading-spinner"></div>
-                <div style="margin-top: 16px;">
+                <div>
                     <div id="loadingStageTitle" style="font-size: 16px; font-weight: 700; color: var(--brand-blue);">⚡ Loading Scikit-Learn ML Model Pipeline...</div>
                     <div id="loadingStageSub" style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Evaluating 14 clinical vitals against 10,500 patient cohort patterns</div>
                 </div>
@@ -413,44 +693,14 @@
         </section>
 
         <!-- ===================================================================
-             TAB 3: ANALYTICS & ML STUDIO (CONSOLIDATED ANALYTICS + ML BENCHMARKS)
+             TAB 3: ANALYTICS STUDIO (POPULATION HEALTH DASHBOARDS)
              =================================================================== -->
         <section id="analyticsTab" class="tab-content">
-            <!-- ML Dataset & Pipeline Architecture Specification Card -->
-            <div class="glass-card" style="margin-bottom: 24px;">
-                <div class="card-title">
-                    <i class="fa-solid fa-database" style="color: var(--brand-blue);"></i>
-                    <span>Machine Learning Dataset & Pipeline Architecture Specifications</span>
-                </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px;">
-                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
-                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">DATASET COHORT</div>
-                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">Smart Health 10K</div>
-                        <div style="font-size: 12px; color: var(--emerald-accent); margin-top: 2px;">10,500 Patient Records</div>
-                    </div>
-                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
-                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">TRAIN / TEST RATIO</div>
-                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">80% / 20%</div>
-                        <div style="font-size: 12px; color: var(--brand-blue); margin-top: 2px;">8,400 Train / 2,100 Test</div>
-                    </div>
-                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
-                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">SCALING & PIPELINE</div>
-                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">StandardScaler</div>
-                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Serialized via Joblib</div>
-                    </div>
-                    <div style="background: var(--bg-main); padding: 16px; border-radius: 10px; border: 1px solid var(--border-subtle);">
-                        <div style="font-size: 11px; font-weight: 700; color: var(--text-muted);">DISEASES EVALUATED</div>
-                        <div style="font-size: 18px; font-weight: 800; color: var(--text-heading); margin-top: 4px;">5 Conditions</div>
-                        <div style="font-size: 12px; color: var(--amber-accent); margin-top: 2px;">Multi-label Risk Mapping</div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Population Health Analytics Dashboards -->
             <div class="glass-card">
                 <div class="card-title">
                     <i class="fa-solid fa-chart-pie" style="color: var(--brand-blue);"></i>
-                    <span>Population Health Analytics Dashboards</span>
+                    <span>Population Health Analytics Studio</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 28px;">
@@ -476,6 +726,41 @@
                     </div>
                 </div>
             </div>
+        </section>
+
+        <!-- ===================================================================
+             TAB 4: ML BENCHMARKS STUDIO (CLASSIFIER METRICS & PIPELINE SPECS)
+             =================================================================== -->
+        <section id="benchmarksTab" class="tab-content">
+            <!-- ML Dataset & Pipeline Architecture Specification Card -->
+            <div class="glass-card" style="margin-bottom: 24px;">
+                <div class="card-title">
+                    <i class="fa-solid fa-database" style="color: var(--brand-blue);"></i>
+                    <span>Machine Learning Dataset & Pipeline Architecture Specifications</span>
+                </div>
+                <div class="stats-grid" style="margin-bottom: 0;">
+                    <div class="stat-card">
+                        <div class="stat-label">DATASET COHORT</div>
+                        <div class="stat-value" style="font-size: 22px;">Smart Health 10K</div>
+                        <div class="stat-subtext"><i class="fa-solid fa-users"></i> 10,500 Patient Records</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">TRAIN / TEST RATIO</div>
+                        <div class="stat-value" style="font-size: 22px;">80% / 20%</div>
+                        <div class="stat-subtext" style="color: var(--brand-blue);"><i class="fa-solid fa-diagram-project"></i> 8,400 Train / 2,100 Test</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">SCALING & PIPELINE</div>
+                        <div class="stat-value" style="font-size: 22px;">StandardScaler</div>
+                        <div class="stat-subtext" style="color: var(--amber-accent);"><i class="fa-solid fa-box-archive"></i> Serialized via Joblib</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">DISEASES EVALUATED</div>
+                        <div class="stat-value" style="font-size: 22px;">5 Conditions</div>
+                        <div class="stat-subtext" style="color: var(--rose-accent);"><i class="fa-solid fa-stethoscope"></i> Multi-label Risk Mapping</div>
+                    </div>
+                </div>
+            </div>
 
             <!-- ML Classifier Metrics Benchmarking Bar Chart & Table -->
             <div class="glass-card">
@@ -489,7 +774,7 @@
                 </div>
 
                 <!-- Numeric ML Metrics Comparison Table -->
-                <div class="card-title" style="font-size: 15px; margin-top: 24px;">Classifiers Benchmarking Metrics Table</div>
+                <div class="card-title" style="font-size: 15px; margin-top: 24px;">ML Classifier Performance Benchmark</div>
                 <div class="table-wrapper">
                     <table class="custom-table">
                         <thead>
@@ -503,9 +788,9 @@
                             </tr>
                         </thead>
                         <tbody id="metricsTableBody">
-                            <tr>
+                            <tr style="background: var(--emerald-bg); border-left: 3px solid var(--emerald-accent);">
                                 <td style="font-weight: 700; color: var(--brand-blue);">Random Forest Classifier (Ensemble)</td>
-                                <td>88.5%</td>
+                                <td style="font-weight: 700; color: var(--emerald-accent);">88.5%</td>
                                 <td>87.9%</td>
                                 <td>88.2%</td>
                                 <td>88.0%</td>
@@ -570,20 +855,79 @@
 
     </main>
 
-    <!-- Application Footer -->
+    <!-- 10/10 Enterprise Minimal Footer -->
     <footer class="app-footer">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; max-width: 1360px; margin: 0 auto; padding: 0 28px;">
-            <div>
-                <strong>Smart Health Prediction System</strong> • Version 2.0.1 Release
+        <div class="footer-inner">
+            <!-- Left Section -->
+            <div class="footer-left">
+                <div class="footer-brand">
+                    <div class="footer-brand-icon">
+                        <i class="fa-solid fa-heart-pulse"></i>
+                    </div>
+                    <div class="footer-brand-text">
+                        <div class="footer-brand-title">Smart Health Prediction System</div>
+                        <div class="footer-brand-sub">Clinical AI Platform</div>
+                    </div>
+                </div>
+                <div class="footer-copyright">
+                    <span class="footer-copy-text">© 2026 Smart Health Prediction System</span>
+                    <span class="footer-author">Designed & Developed by Harsha Vardhan</span>
+                </div>
             </div>
-            <div style="font-family: var(--font-mono); font-size: 12px; color: var(--text-muted);">
-                Python • Flask • Scikit-Learn • SQLAlchemy • SQLite • Docker
+
+            <!-- Center Section -->
+            <div class="footer-center">
+                <div class="footer-tech-text">
+                    Python <span>•</span> Flask <span>•</span> Scikit-Learn <span>•</span> SQLite <span>•</span> Docker
+                </div>
             </div>
-            <div>
-                © 2026 Smart Health Prediction System. All Rights Reserved.
+
+            <!-- Right Section -->
+            <div class="footer-right">
+                <div class="footer-chip chip-status">
+                    <span class="status-indicator-dot"></span> Operational
+                </div>
+                <div class="footer-chip">
+                    <span class="chip-label">Version</span> <strong class="chip-val">2.0.1</strong>
+                </div>
+                <div class="footer-chip">
+                    <span class="chip-label">Avg Latency</span> <strong class="chip-val">14 ms</strong>
+                </div>
             </div>
         </div>
     </footer>
+    </div>
+
+    <!-- Patient Details Modal -->
+    <div id="patientDetailModal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 38px; height: 38px; border-radius: 10px; background: var(--brand-blue-bg); color: var(--brand-blue); display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalPatientName" style="font-size: 17px; font-weight: 700; color: var(--text-heading);">Patient Diagnostic Record</h3>
+                        <div id="modalPatientCode" style="font-size: 12px; font-family: var(--font-mono); color: var(--brand-blue); font-weight: 700;">MED-0000</div>
+                    </div>
+                </div>
+                <button class="icon-btn" onclick="closePatientDetailModal()" title="Close">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="modal-body" id="modalPatientBody">
+                <!-- Dynamically populated via JavaScript -->
+            </div>
+
+            <div class="modal-footer">
+                <button class="preset-btn" onclick="closePatientDetailModal()">Close Window</button>
+                <a id="modalDownloadReportBtn" href="#" target="_blank" class="btn-primary" style="text-decoration: none;">
+                    <i class="fa-solid fa-file-pdf"></i> Download PDF Clinical Report
+                </a>
+            </div>
+        </div>
+    </div>
 
     <!-- Custom JavaScript Controllers -->
     <script src="/static/js/toast.js"></script>

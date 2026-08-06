@@ -106,5 +106,68 @@ class TestMedPredictAI(unittest.TestCase):
         self.assertEqual(res['risk_level'], 'Low')
         self.assertTrue(res['latency_ms'] < 1000.0)
 
+    def test_09_input_validation_failure(self):
+        """Verify Input Validation Rejects Invalid Vitals (HTTP 400)"""
+        # Test Systolic <= Diastolic
+        payload_bp = {
+            'age': 45, 'gender': 'Male', 'height_cm': 175, 'weight_kg': 75,
+            'systolic_bp': 110, 'diastolic_bp': 120, 'glucose': 95, 'cholesterol': 180
+        }
+        res = self.client.post('/api/predict', data=json.dumps(payload_bp), content_type='application/json')
+        self.assertEqual(res.status_code, 400)
+        data = json.loads(res.data)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Systolic BP must be greater than Diastolic BP.')
+
+        # Test Out of Bounds Age
+        payload_age = {
+            'age': 150, 'gender': 'Male', 'height_cm': 175, 'weight_kg': 75,
+            'systolic_bp': 130, 'diastolic_bp': 85, 'glucose': 95, 'cholesterol': 180
+        }
+        res = self.client.post('/api/predict', data=json.dumps(payload_age), content_type='application/json')
+        self.assertEqual(res.status_code, 400)
+        data = json.loads(res.data)
+        self.assertFalse(data['success'])
+        self.assertEqual(data['error'], 'Age must be between 1 and 120 years.')
+
+    def test_10_sorting_allowlist_fallback(self):
+        """Verify Invalid Column Sort Parameters Fall Back Safely to Created At"""
+        res = self.client.get('/api/patients?sort_by=invalid_column_name&order=asc')
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertTrue(data['success'])
+        self.assertTrue(len(data['records']) > 0)
+
+    def test_11_analytics_accurate_counts(self):
+        """Verify Analytics API Returns Dictionary Breakdown Without Hardcoded Fallbacks"""
+        res = self.client.get('/api/analytics')
+        self.assertEqual(res.status_code, 200)
+        data = json.loads(res.data)
+        self.assertTrue(data['success'])
+        self.assertIn('risk_breakdown', data)
+        self.assertIn('Low', data['risk_breakdown'])
+        self.assertIn('disease_prevalence', data)
+        self.assertIn('heart_disease', data['disease_prevalence'])
+
+    def test_12_feature_importance_and_security_headers(self):
+        """Verify Feature Importance Engine & Enterprise Security Headers"""
+        res = self.client.get('/api/health')
+        self.assertEqual(res.headers.get('X-Content-Type-Options'), 'nosniff')
+        self.assertEqual(res.headers.get('X-Frame-Options'), 'SAMEORIGIN')
+
+        payload = {
+            'patient_code': 'TEST-9900',
+            'patient_name': 'Feature Importance Test',
+            'age': 45, 'gender': 'Male', 'height_cm': 175, 'weight_kg': 78,
+            'systolic_bp': 135, 'diastolic_bp': 88, 'glucose': 105, 'cholesterol': 195,
+            'heart_rate': 74, 'smoking': 0, 'alcohol': 0, 'exercise': 1, 'family_history': 0
+        }
+        res_pred = self.client.post('/api/predict', data=json.dumps(payload), content_type='application/json')
+        self.assertEqual(res_pred.status_code, 200)
+        data = json.loads(res_pred.data)
+        self.assertIn('feature_importance', data['data'])
+
 if __name__ == '__main__':
     unittest.main()
+
+

@@ -20,7 +20,7 @@ function getChartGridColor() {
 }
 
 // Helper to normalize decimals (e.g. 0.885) to percentages (88.5)
-function getMetricVal(modelObj, key, fallback) {
+function getMetricVal(modelObj, key, fallback = 0) {
     if (!modelObj || modelObj[key] === undefined) return fallback;
     let val = parseFloat(modelObj[key]);
     if (isNaN(val)) return fallback;
@@ -32,7 +32,7 @@ function getMetricVal(modelObj, key, fallback) {
 function initDashboardCharts(analyticsData, modelMetrics) {
     renderDiseaseDistributionChart(analyticsData?.disease_prevalence || {});
     renderRiskDistributionChart(analyticsData?.risk_breakdown || {});
-    renderLatencyTrendChart(analyticsData?.avg_latency_ms || 14.2);
+    renderLatencyTrendChart(analyticsData?.avg_latency_ms || 0);
     renderMonthlyTrendChart();
     renderDemographicsChart();
     
@@ -43,22 +43,25 @@ function initDashboardCharts(analyticsData, modelMetrics) {
 
 // 1. Disease Prevalence Donut Chart
 function renderDiseaseDistributionChart(diseaseData) {
-    const ctx = document.getElementById('diseaseDistributionChart')?.getContext('2d');
-    if (!ctx) return;
+    const canvas = document.getElementById('diseaseDistributionChart');
+    if (!canvas) return;
     
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
     if (diseaseChartInstance) diseaseChartInstance.destroy();
-    
+
+    const ctx = canvas.getContext('2d');
     diseaseChartInstance = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Heart Disease', 'Diabetes', 'Kidney Disease', 'Stroke Risk', 'Hypertension'],
             datasets: [{
                 data: [
-                    diseaseData.heart_disease || 142,
-                    diseaseData.diabetes || 128,
-                    diseaseData.kidney_disease || 84,
-                    diseaseData.stroke_risk || 96,
-                    diseaseData.hypertension || 210
+                    diseaseData.heart_disease || 0,
+                    diseaseData.diabetes || 0,
+                    diseaseData.kidney_disease || 0,
+                    diseaseData.stroke_risk || 0,
+                    diseaseData.hypertension || 0
                 ],
                 backgroundColor: ['#0284c7', '#06b6d4', '#7c3aed', '#f59e0b', '#ef4444'],
                 borderWidth: 2,
@@ -77,11 +80,13 @@ function renderDiseaseDistributionChart(diseaseData) {
 
 // 2. ML Models Metrics Comparison Bar Chart (Normalized 0-100 Percentages)
 function renderModelComparisonChart(metrics) {
-    const ctx = document.getElementById('modelComparisonChart')?.getContext('2d');
-    if (!ctx) return;
+    const canvas = document.getElementById('modelComparisonChart');
+    if (!canvas) return;
     
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
     if (modelChartInstance) modelChartInstance.destroy();
-    
+
     metrics = metrics || {};
     
     const rfAcc = getMetricVal(metrics.random_forest, 'accuracy', 88.5);
@@ -99,6 +104,7 @@ function renderModelComparisonChart(metrics) {
     const dtRec = getMetricVal(metrics.decision_tree, 'recall', 79.4);
     const dtF1 = getMetricVal(metrics.decision_tree, 'f1_score', 79.25);
     
+    const ctx = canvas.getContext('2d');
     modelChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -107,17 +113,20 @@ function renderModelComparisonChart(metrics) {
                 {
                     label: 'Random Forest (Ensemble Primary)',
                     data: [rfAcc, rfPrec, rfRec, rfF1],
-                    backgroundColor: '#0284c7'
+                    backgroundColor: '#0284c7',
+                    borderRadius: 6
                 },
                 {
                     label: 'Logistic Regression',
                     data: [lrAcc, lrPrec, lrRec, lrF1],
-                    backgroundColor: '#06b6d4'
+                    backgroundColor: '#06b6d4',
+                    borderRadius: 6
                 },
                 {
                     label: 'Decision Tree Classifier',
                     data: [dtAcc, dtPrec, dtRec, dtF1],
-                    backgroundColor: '#94a3b8'
+                    backgroundColor: '#94a3b8',
+                    borderRadius: 6
                 }
             ]
         },
@@ -137,20 +146,23 @@ function renderModelComparisonChart(metrics) {
 
 // 3. Risk Level Breakdown Pie Chart
 function renderRiskDistributionChart(riskData) {
-    const ctx = document.getElementById('riskDistributionChart')?.getContext('2d');
-    if (!ctx) return;
+    const canvas = document.getElementById('riskDistributionChart');
+    if (!canvas) return;
     
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
     if (riskChartInstance) riskChartInstance.destroy();
-    
+
+    const ctx = canvas.getContext('2d');
     riskChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: ['Low Risk', 'Medium Risk', 'High Risk'],
             datasets: [{
                 data: [
-                    riskData['Low'] || 260,
-                    riskData['Medium'] || 180,
-                    riskData['High'] || 80
+                    riskData['Low'] || 0,
+                    riskData['Medium'] || 0,
+                    riskData['High'] || 0
                 ],
                 backgroundColor: ['#059669', '#d97706', '#e11d48'],
                 borderWidth: 2,
@@ -169,13 +181,16 @@ function renderRiskDistributionChart(riskData) {
 
 // 4. Latency vs < 1.0s SLA Line Chart
 function renderLatencyTrendChart(avgLatency) {
-    const ctx = document.getElementById('latencyTrendChart')?.getContext('2d');
-    if (!ctx) return;
+    const canvas = document.getElementById('latencyTrendChart');
+    if (!canvas) return;
     
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
     if (latencyChartInstance) latencyChartInstance.destroy();
-    
+
     const sampleLatencies = [14, 16, 12, 18, 13, 21, 15, avgLatency || 14.2];
     
+    const ctx = canvas.getContext('2d');
     latencyChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -215,11 +230,14 @@ function renderLatencyTrendChart(avgLatency) {
 
 // 5. Monthly Prediction Trend Area Chart
 function renderMonthlyTrendChart() {
-    const ctx = document.getElementById('monthlyTrendChart')?.getContext('2d');
-    if (!ctx) return;
+    const canvas = document.getElementById('monthlyTrendChart');
+    if (!canvas) return;
     
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
     if (monthlyTrendChartInstance) monthlyTrendChartInstance.destroy();
-    
+
+    const ctx = canvas.getContext('2d');
     monthlyTrendChartInstance = new Chart(ctx, {
         type: 'line',
         data: {
@@ -249,18 +267,21 @@ function renderMonthlyTrendChart() {
 
 // 6. Demographics Age & Gender Bar Chart
 function renderDemographicsChart() {
-    const ctx = document.getElementById('demographicsChart')?.getContext('2d');
-    if (!ctx) return;
+    const canvas = document.getElementById('demographicsChart');
+    if (!canvas) return;
     
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
     if (demographicsChartInstance) demographicsChartInstance.destroy();
-    
+
+    const ctx = canvas.getContext('2d');
     demographicsChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: ['18-35 yrs', '36-50 yrs', '51-65 yrs', '65+ yrs'],
             datasets: [
-                { label: 'Male Patients', data: [65, 110, 145, 80], backgroundColor: '#0284c7' },
-                { label: 'Female Patients', data: [70, 105, 130, 75], backgroundColor: '#06b6d4' }
+                { label: 'Male Patients', data: [65, 110, 145, 80], backgroundColor: '#0284c7', borderRadius: 6 },
+                { label: 'Female Patients', data: [70, 105, 130, 75], backgroundColor: '#06b6d4', borderRadius: 6 }
             ]
         },
         options: {

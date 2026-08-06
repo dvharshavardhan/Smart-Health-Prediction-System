@@ -160,6 +160,14 @@ class HealthPredictor:
             recommendations.append("Continue regular annual wellness checkups.")
             recommendations.append("Stay hydrated and maintain routine exercise.")
 
+        # Extract ML Feature Importances from trained Random Forest ensemble
+        feature_importance = {}
+        if hasattr(self.rf_model, 'feature_importances_'):
+            importances = self.rf_model.feature_importances_
+            total_imp = float(sum(importances)) or 1.0
+            for name, imp in zip(self.feature_names, importances):
+                feature_importance[name] = round(float(imp / total_imp) * 100, 2)
+
         latency_ms = round((time.time() - start_time) * 1000, 2)
         meets_sla = latency_ms < Config.SLA_LATENCY_MAX_MS
         
@@ -175,6 +183,7 @@ class HealthPredictor:
                 'medium': round(float(probs[1]), 4),
                 'high': round(float(probs[2]), 4)
             },
+            'feature_importance': feature_importance,
             'key_factors': key_factors,
             'recommendations': recommendations,
             'latency_ms': latency_ms,
